@@ -4,11 +4,16 @@ import Avatar from '@mui/material/Avatar';
 import { useState, useEffect } from 'react';
 import menuIcon from '../assets/menuIcon.svg';
 import exitNavbarIcon from '../assets/exitNavbarIcon.svg';
+import { authentication } from '../firebaseConfig';
+import { useHistory } from 'react-router-dom';
 
 const Navbar = () => {
 	const [scrolling, setScrolling] = useState(false);
 	const [authenticated, setAuthenticated] = useState(false);
 	const [username, setUsername] = useState('anas');
+	const [userImage, setUserImage] = useState('');
+	const history = useHistory();
+
 	const scrollHandler = () => {
 		window.scrollY > 100 ? setScrolling(true) : setScrolling(false);
 	};
@@ -17,6 +22,18 @@ const Navbar = () => {
 		window.addEventListener('scroll', scrollHandler);
 
 		/* will check whether the user logged in or not  */
+
+		authentication.onAuthStateChanged((user) => {
+			if (user) {
+				setAuthenticated(true);
+				setUsername(user.displayName);
+				setUserImage(user.photoURL);
+			} else {
+				setAuthenticated(false);
+				setUsername('');
+				setUserImage('');
+			}
+		});
 	}, []);
 
 	const dropMenu = () => {
@@ -26,6 +43,10 @@ const Navbar = () => {
 		document.getElementById('mobileNav').style.top = '-100%';
 	};
 
+	const logOut = () => {
+		authentication.signOut();
+		history.push('/');
+	};
 	return (
 		<nav className='fixed right-0 left-0 top-0 z-10'>
 			{/* desktop navbar */}
@@ -62,24 +83,34 @@ const Navbar = () => {
 						</Link>
 
 						{authenticated ? (
-							<Link
-								to='/'
-								className='sm:flex items-center justify-center space-x-1 hidden'>
-								<Avatar />
-								<p>{username}</p>
-							</Link>
+							<>
+								<Link
+									to='/'
+									className='sm:flex items-center justify-center space-x-1 hidden'>
+									<Avatar src={userImage} />
+									<p>{username}</p>
+								</Link>
+								<button
+									onClick={logOut}
+									className='py-1 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white hidden sm:inline-flex'>
+									Log Out
+								</button>
+							</>
 						) : (
-							<Link
-								to='/login'
-								className='hover:opacity-80 trasition-all duration-200 hidden sm:inline-flex'>
-								Log in
-							</Link>
+							<>
+								<Link
+									to='/login'
+									className='hover:opacity-80 trasition-all duration-200 hidden sm:inline-flex'>
+									Log in
+								</Link>
+								<Link
+									to='/registration'
+									className='py-1 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white hidden sm:inline-flex'>
+									Join Us
+								</Link>
+							</>
 						)}
-						<Link
-							to='/registration'
-							className='py-1 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white hidden sm:inline-flex'>
-							Join Us
-						</Link>
+
 						<img
 							id='menuIcon'
 							src={menuIcon}
@@ -126,28 +157,37 @@ const Navbar = () => {
 							Explore
 						</Link>
 						{authenticated ? (
-							<Link
-								onClick={exitMenu}
-								to='/'
-								className='flex items-center justify-center space-x-1'>
-								<Avatar />
-								<p>{username}</p>
-							</Link>
+							<>
+								{' '}
+								<Link
+									onClick={exitMenu}
+									to='/'
+									className='flex items-center justify-center space-x-1'>
+									<Avatar src={userImage} />
+									<p>{username}</p>
+								</Link>
+								<button
+									onClick={logOut}
+									className='py-.5 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white text-sm font-bold '>
+									Log Out
+								</button>
+							</>
 						) : (
-							<Link
-								onClick={exitMenu}
-								to='/login'
-								className='hover:opacity-80 trasition-all duration-200'>
-								Log in
-							</Link>
+							<>
+								<Link
+									onClick={exitMenu}
+									to='/login'
+									className='hover:opacity-80 trasition-all duration-200'>
+									Log in
+								</Link>
+								<Link
+									onClick={exitMenu}
+									to='/registration'
+									className='py-.5 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white text-sm font-bold '>
+									Join Us
+								</Link>
+							</>
 						)}
-
-						<Link
-							onClick={exitMenu}
-							to='/registration'
-							className='py-.5 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white text-sm font-bold '>
-							Join Us
-						</Link>
 					</div>
 				</div>
 			</div>
