@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import herosectionSVG from '../assets/herosectionSVG.svg';
-import Footer from './Footer';
+
 import Share from './Share';
 const Home = () => {
 	return (
@@ -29,7 +29,6 @@ const Home = () => {
 			</div>
 
 			<Share />
-			<Footer />
 		</div>
 	);
 };
