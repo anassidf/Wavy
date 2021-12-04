@@ -57,7 +57,7 @@ const ProfilePage = () => {
             <h3 className="text-xl">Contact me:</h3>
             <p className="text-base mt-3 mb-2"> {email}</p>
             <div className="flex items-center space-x-1">
-              <img src={phoneNumberIcon} alt="" className="h-6" />
+              {/* <img src={phoneNumberIcon} alt="" className="h-6" /> */}
               <p className="text-base">{phoneNumber}</p>
             </div>
           </div>
