@@ -1,7 +1,8 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-
+import { getStorage } from 'firebase/storage';
+import { getAnalytics } from 'firebase/analytics';
 const firebaseConfig = {
 	apiKey: 'AIzaSyDNpBLpxoOABN9RZUCZ1r6tPwkreTKIGEA',
 	authDomain: 'wavy-cd33d.firebaseapp.com',
@@ -12,9 +13,12 @@ const firebaseConfig = {
 	measurementId: 'G-W8DHJP2MWZ',
 };
 
-const services = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const authentication = getAuth(services);
+const auth = getAuth(app);
+
 const db = getFirestore();
+const storage = getStorage(app);
+const analytics = getAnalytics(app);
 
-export { authentication, db };
+export { auth, db, storage, analytics };
