@@ -4,7 +4,7 @@ import Avatar from '@mui/material/Avatar';
 import { useState, useEffect } from 'react';
 import menuIcon from '../assets/menuIcon.svg';
 import exitNavbarIcon from '../assets/exitNavbarIcon.svg';
-import { authentication } from '../firebaseConfig';
+import { auth } from '../firebaseConfig';
 import { useHistory } from 'react-router-dom';
 
 const Navbar = () => {
@@ -23,7 +23,7 @@ const Navbar = () => {
 
 		/* will check whether the user logged in or not  */
 
-		authentication.onAuthStateChanged((user) => {
+		auth.onAuthStateChanged((user) => {
 			if (user) {
 				setAuthenticated(true);
 				setUsername(user.displayName);
@@ -44,7 +44,7 @@ const Navbar = () => {
 	};
 
 	const logOut = () => {
-		authentication.signOut();
+		auth.signOut();
 		history.push('/');
 	};
 	return (

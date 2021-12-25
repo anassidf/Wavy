@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import herosectionSVG from '../assets/herosectionSVG.svg';
 
 import Share from './Share';
+import { useEffect } from 'react';
 const Home = () => {
 	return (
 		<div className=''>
