@@ -1,149 +1,175 @@
-import React, { useState, useRef } from 'react';
-import { useFormik } from 'formik';
-import { db, authentication, storage } from '../firebaseConfig';
+import React, { useState, useCallback } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { db, auth, storage } from '../firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { useEffect } from 'react';
 import gellary from '../assets/gallery.png';
 import { Toaster, toast } from 'react-hot-toast';
-
+import { useDropzone } from 'react-dropzone';
+import { shareFormValidation } from './validations/shareFormValidation';
 const ShareForm = () => {
-	const [image, setImage] = useState(gellary);
-	const [progress, setProgress] = useState(0);
-	const [fileDetails, setFileDetails] = useState({});
-	const imageRef = useRef();
+	/* using drop zone  */
+	const [file, setfile] = useState([]);
+	const [imageUrl, setImageUrl] = useState('');
+	const [uid, setUid] = useState('');
 
-	const handleImageUpload = (e) => {
-		setFileDetails(e.target.files[0]);
-		const storageRef = ref(storage, `images/${fileDetails.name}`);
-		const uploadTask = uploadBytesResumable(storageRef, fileDetails);
+	const onDrop = useCallback((acceptedfile) => {
+		// Do something with the file
+		console.log(acceptedfile);
 
-		/* image uploaded */
-		/* here we r taking the progress and the url for the image in firebase storage */
-		/* on methode takes 4 parameters */
-
-		uploadTask.on(
-			'state_changed',
-			(snapshot) => {
-				const progress = Math.round(
-					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
-				);
-				setProgress(Number(progress));
-			},
-			(error) => {
-				console.log(error.message);
-			},
-			() => {
-				getDownloadURL(uploadTask.snapshot.ref)
-					.then((url) => {
-						setImage(url);
-					})
-					.catch((error) => {
-						console.log(error.message);
-					});
-			}
+		setfile(
+			acceptedfile.map((file) =>
+				Object.assign(file, {
+					preview: URL.createObjectURL(file),
+				})
+			)
 		);
+	}, []);
+	const { getRootProps, getInputProps, isDragActive } = useDropzone({
+		onDrop,
+		maxfile: 1,
+		accept: 'image/jpeg, image/png , image/svg',
+	});
+
+	/* handle share form */
+
+	const handleShareForm = (values) => {
+		console.log(values);
+
+		/* get url for our image to make it public using firebase/storage */
+		if (file.length) {
+			const storageRef = ref(storage, `images/${file[0].name}`);
+			const uploadTask = uploadBytesResumable(storageRef, file[0]);
+
+			uploadTask.on(
+				'state_changed',
+				(snapshot) => {},
+				(error) => {
+					console.log(error.message);
+				},
+				() => {
+					getDownloadURL(uploadTask.snapshot.ref)
+						.then((url) => {
+							setImageUrl(url);
+						})
+						.catch((error) => {
+							console.log(error.message);
+						});
+				}
+			);
+
+			/* getting the current date */
+
+			const date = new Date();
+			const todaysDate =
+				date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+			console.log(todaysDate);
+			/* create a document for a new post  */
+
+			addDoc(collection(db, 'Posts'), {
+				title: values.title,
+				description: values.description,
+				imageUrl: imageUrl,
+				createdAt: todaysDate,
+				likes: 0,
+				uid: auth.currentUser ? auth.currentUser.uid : 'guest',
+				status: 'under review',
+			})
+				.then(() => {
+					toast.success('Post is under review now');
+				})
+				.catch((error) => {
+					console.log(error.message);
+				});
+		} else {
+			if (values.title || values.description) {
+				toast.error('Please add image for your post');
+			} else {
+				toast.error('Please fill all the fields');
+			}
+		}
 	};
+
+	/* create preview image */
+	const thumbs = file.map((file) => (
+		<div key={file.name}>
+			<div>
+				<img src={file.preview} className='w-26 h-16' />
+			</div>
+		</div>
+	));
 
 	/* save image to firebase storage  */
 
-	const formik = useFormik({
-		initialValues: { placeName: '', link: '', description: '', image: '' },
-		onSubmit: (values) => {
-			console.log(values);
-
-			/* add data to firestore */
-			addDoc(collection(db, 'Posts'), {
-				placeName: values.placeName,
-				link: values.link,
-				image: image,
-				description: values.description,
-			})
-				.then(() => {
-					toast.success('Post Added Successfully');
-				})
-				.catch((error) => {
-					toast.error('Something went wrong');
-				});
-
-			document.getElementById('placeName').value = '';
-			document.getElementById('link').value = '';
-			document.getElementById('description').value = '';
-			document.getElementById('image').value = '';
-			document.getElementById('tempImage').src = gellary;
-			setProgress(0);
-		},
-	});
-
 	return (
 		<div className='bg-gray-300 h-screen flex justify-center items-center'>
-			<div className='h-super_larg_height w-96 shadow-2xl bg-gray-600 rounded-lg'>
-				<form
-					onSubmit={formik.handleSubmit}
-					className='h-full flex flex-col justify-center items-center '>
-					{/* input fields */}
-					<input
-						ref={imageRef}
-						onChange={formik.handleChange}
-						value={formik.values.image}
-						name='image'
-						type='file'
-						onChange={handleImageUpload}
-						accept='.jpg, .jpeg, .png'
-						placeholder='Image'
-						className='hidden mb-3 py-1 w-80 rounded-full shadow-md bg-white  px-6 outline-none  tracking-widest text-md'
-						id='image'
-					/>
-					<img
-						id='tempImage'
-						src={image}
-						className=' w-32 h-32 mb-3 cursor-pointer'
-						onClick={() => imageRef.current.click()}
-					/>
-					{progress ? (
-						<h1 className='text-pink-500 mb-3'> Uploaded {progress}%</h1>
-					) : (
-						''
-					)}
+			<div className='bg-shareBackground bg-center bg-cover  h-screen absolute top-0 right-0 left-0 filter blur-md '></div>
+			<Formik
+				initialValues={{
+					title: '',
+					description: '',
+				}}
+				validationSchema={shareFormValidation}
+				onSubmit={handleShareForm}>
+				<div className='z-10 bg-blue-200 flex  justify-center items-center h-super_larg_height2 w-additional_user_data2 lg:w-additional_user_data1   rounded-lg shadow-lg bg-opacity-80 relative '>
+					<Form className='flex flex-col items-center'>
+						{/* image drop zone box */}
+						<div
+							{...getRootProps()}
+							className='cursor-pointer flex justify-center items-center border-2 border-dotted border-gray-500 mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm h-28 '>
+							<input {...getInputProps()} />
+							{isDragActive ? (
+								<p className='text-sm text-center animate-pulse text-green-400'>
+									Drop the Image here ...
+								</p>
+							) : (
+								<p className='text-xs text-center text-blue-500'>
+									Drag and drop any Image here, or click to select Image
+								</p>
+							)}
+							<aside>{thumbs}</aside>
+						</div>
 
-					<input
-						onChange={formik.handleChange}
-						value={formik.values.placeName}
-						name='placeName'
-						type='text'
-						placeholder='Place Name'
-						className='mb-5 py-1 w-80 rounded-full shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest text-md '
-						id='placeName'
-						required
-					/>
-					<input
-						onChange={formik.handleChange}
-						value={formik.values.link}
-						name='link'
-						type='text'
-						placeholder='Link'
-						className='mb-5 py-1 w-80 rounded-full shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest text-md'
-						id='link'
-						required
-					/>
+						<div className='relative text-center sm:text-left'>
+							<Field
+								id='field1'
+								autoComplete='off'
+								name='title'
+								placeholder='Title'
+								type='text'
+								className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
+							/>
+							<ErrorMessage
+								component='div'
+								name='title'
+								className='text-red-500 text-xs text-center sm:text-left mt-1 sm:ml-5  '
+							/>
+						</div>
 
-					<textarea
-						onChange={formik.handleChange}
-						value={formik.values.description}
-						name='description'
-						rows='5'
-						cols='50'
-						type='text'
-						placeholder='Description'
-						className='mb-10 py-1 w-80 rounded-md shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest text-md'
-						id='description'
-						required
-					/>
-					<button className='bg-pink-600 w-64 text-white rounded-full py-2  hover:shadow-xl font-bold shadow-md transition-all ease-in-out duration-300 hover:bg-opacity-80 '>
-						ADD
-					</button>
-				</form>
-			</div>
+						<div className='relative text-center sm:text-left'>
+							<Field
+								id='field2'
+								autoComplete='off'
+								as='textarea'
+								rows='7'
+								name='description'
+								placeholder='Describe your experience'
+								className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
+							/>
+							<ErrorMessage
+								component='div'
+								name='description'
+								className='text-red-500 text-xs text-center sm:text-left mt-2 sm:ml-5  '
+							/>
+						</div>
+						<button className='mt-6 mb-5 bg-purple-800 text-white rounded-md sm:py-2 sm:w-96 py-1.5 w-52  hover:shadow-xl font-bold shadow-md transition-all ease-in-out duration-300 hover:bg-opacity-80 sm:text-lg text-sm'>
+							Share
+						</button>
+					</Form>
+				</div>
+			</Formik>
 			<Toaster position='top-right' />
 		</div>
 	);

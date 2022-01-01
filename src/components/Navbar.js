@@ -48,7 +48,7 @@ const Navbar = () => {
 		history.push('/');
 	};
 	return (
-		<nav className='fixed right-0 left-0 top-0 z-10'>
+		<nav className='fixed right-0 left-0 top-0 z-30'>
 			{/* desktop navbar */}
 			<div
 				className={`${
@@ -106,7 +106,7 @@ const Navbar = () => {
 								<Link
 									to='/registration'
 									className='py-1 px-6 rounded-full bg-pink-600 shadow-sm hover:bg-opacity-70 transition-all duration-300 text-white hidden sm:inline-flex'>
-									Join Us
+									Sign Up
 								</Link>
 							</>
 						)}
