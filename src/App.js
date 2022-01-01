@@ -8,10 +8,9 @@ import ShareForm from "./components/ShareForm";
 import Registration from "./components/Registration";
 import Footer from "./components/Footer";
 import Login from "./components/Login";
-import ProfilePage from "./components/ProfilePage";
-
 import { Report } from "notiflix/build/notiflix-report-aio";
 import UserAdditionDataForm from "./components/UserAdditionDataForm";
+import ProfilePage from "./components/ProfilePage";
 function App() {
   useEffect(() => {
     Report.info(
