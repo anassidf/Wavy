@@ -12,6 +12,10 @@ import ProfilePage from './components/ProfilePage';
 
 import { Report } from 'notiflix/build/notiflix-report-aio';
 import UserAdditionDataForm from './components/UserAdditionDataForm';
+import TourGuides from './components/TourGuides';
+import Recommendations from './components/Recommendations';
+import Admin from './components/admin/Admin';
+import AdminDashboard from './components/admin/AdminDashboard';
 function App() {
 	useEffect(() => {
 		Report.info(
@@ -34,9 +38,13 @@ function App() {
 					<Route exact path='/profile' component={ProfilePage} />
 					<Route
 						exact
-						path='/additional_data_form'
+						path='/additional_data_form/:uid'
 						component={UserAdditionDataForm}
 					/>
+					<Route exact path='/tour_guides/:place' component={TourGuides} />
+					<Route exact path='/recommendations' component={Recommendations} />
+					<Route exact path='/admin' component={Admin} />
+					<Route path='/admin/dashboard' component={AdminDashboard} />
 				</Switch>
 				<Footer />
 			</div>

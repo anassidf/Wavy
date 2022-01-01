@@ -1,17 +1,26 @@
 import google from '../assets/google.svg';
 import { auth, db } from '../firebaseConfig';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import {
+	addDoc,
+	collection,
+	doc,
+	getDoc,
+	setDoc,
+	DocumentSnapshot,
+} from 'firebase/firestore';
 import { Toaster, toast } from 'react-hot-toast';
-
+import { useHistory } from 'react-router-dom';
+import { useState } from 'react';
 const GoogleApi = ({ action }) => {
+	const history = useHistory();
 	const googleRegistration = async (e) => {
 		e.preventDefault();
 		/*  add the provider (google) */
 		const provider = new GoogleAuthProvider();
 
 		await signInWithPopup(auth, provider)
-			.then(async () => {
+			.then(async (user) => {
 				/* toast.success(
 					action === 'login'
 						? 'You are loged in'
@@ -25,7 +34,11 @@ const GoogleApi = ({ action }) => {
 					uid: auth.currentUser.uid,
 					description: '',
 				})
-					.then((res) => {})
+					.then(() => {
+						action === 'login'
+							? history.push('/profile')
+							: history.push(`/additional_data_form/${auth.currentUser.uid}`);
+					})
 					.catch((error) => {
 						console.log(error.message);
 					});
@@ -33,9 +46,7 @@ const GoogleApi = ({ action }) => {
 			.catch((error) => {
 				console.log(error.message);
 				toast.error(
-					action === 'login'
-						? 'Something went wrong'
-						: 'This account is already regestered try another email'
+					action === 'login' ? 'Something went wrong' : 'Something went wrong'
 				);
 			});
 
