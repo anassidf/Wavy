@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 const RecommendedPlaces = () => {
 	return (
-		<div className='  relative flex justify-center mt-20 items-center'>
+		<div className='  relative flex justify-center mt-20 items-center mb-20'>
 			<div className='text-white pl-6 sm:pl-16 flex  justify-around items-center h-96  bg-recommendations_card  bg-cover bg-center  max-w-7xl gap-36 rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out'>
 				<div className='max-w-4xl flex flex-col items-center sm:justify-center sm:items-start  '>
 					<h1 className='text-xl sm:text-3xl font-bold text-center sm:text-left mr-5 contrast-200'>

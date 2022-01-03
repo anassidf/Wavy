@@ -5,7 +5,9 @@ import { adminValidation } from '../validations/adminValidation';
 import { useHistory } from 'react-router-dom';
 const Admin = () => {
 	const history = useHistory();
-
+	useEffect(() => {
+		console.log(window.location.href);
+	}, []);
 	const handleAdminData = (values) => {
 		console.log(values);
 
