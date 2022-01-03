@@ -18,11 +18,14 @@ import Admin from './components/admin/Admin';
 import AdminDashboard from './components/admin/AdminDashboard';
 function App() {
 	useEffect(() => {
-		Report.info(
-			'Why Wavy',
-			'The idea comes when we thougt that adventurers have kind of unstable life so we came up with wavy name',
-			'Got it'
-		);
+		console.log(window.location.href);
+		if (window.location.href === 'http://localhost:3000/') {
+			Report.info(
+				'Why Wavy',
+				'The idea comes when we thougt that adventurers have kind of unstable life so we came up with wavy name',
+				'Got it'
+			);
+		} else return;
 	}, []);
 	return (
 		<Router>

@@ -78,7 +78,7 @@ const ShareForm = () => {
 				status: 'under review',
 			})
 				.then(() => {
-					toast.success('Post is under review now');
+					toast.success('Post is under review now ');
 				})
 				.catch((error) => {
 					console.log(error.message);

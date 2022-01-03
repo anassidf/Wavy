@@ -12,8 +12,9 @@ module.exports = {
 				additional_user_data1: '40%',
 				additional_user_data2: '80%',
 				tour_guide_card: '60%',
-				text_width: '800px',
+				text_width: '500px',
 				carousel_image: '100rem',
+				larg: '30%',
 			},
 			height: {
 				super_larg_height: '80%',
@@ -33,6 +34,7 @@ module.exports = {
 				shareBackground: 'url("/src/assets/shareBackground.jpg")',
 				recommendations_card: 'url("/src/assets/recommendationsCard.png")',
 				admin_Image: 'url("/src/assets/adminBackground.jpg")',
+				add_recommendations: 'url("/src/assets/addRecommendations.jpg")',
 			},
 		},
 	},
