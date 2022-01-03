@@ -37,6 +37,28 @@ const Navbar = () => {
     return () => {};
   }, []);
 
+  useEffect(() => {
+    if (
+      window.location.href == "http://localhost:3000/admin" ||
+      window.location.href == "http://localhost:3000/admin/dashboard" ||
+      window.location.href == "http://localhost:3000/admin/dashboard/posts" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/posts/remove" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/posts/waiting" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/tour_guides/requests" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/tour_guides/remove" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/recommendations" ||
+      window.location.href ==
+        "http://localhost:3000/admin/dashboard/tour_guides"
+    ) {
+      document.getElementById("navbar").style.backgroundColor = "#D1D5DB";
+    } else return;
+  }, [window.location.href]);
+
   const dropMenu = () => {
     document.getElementById("mobileNav").style.top = "0";
   };
@@ -52,6 +74,7 @@ const Navbar = () => {
     <nav className='fixed right-0 left-0 top-0 z-30'>
       {/* desktop navbar */}
       <div
+        id='navbar'
         className={`${
           scrolling ? "bg-gray-300 shadow-md" : ""
         } text-black bg-transparent relative h-14  flex items-center text-lg transition-all duration-300 ease-in-out`}

@@ -10,12 +10,17 @@ import {
 } from 'firebase/firestore';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
+import noData from '../../assets/noData.svg';
+
 const RemovePosts = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
 	useEffect(async () => {
 		/*  getting posts data */
-		const docsRef = query(collection(db, 'Posts'));
+		const docsRef = query(
+			collection(db, 'Posts'),
+			where('status', '==', 'approaved')
+		);
 		const posts = await getDocs(docsRef);
 		let temp = new Array();
 		let ids = new Array();
@@ -34,7 +39,6 @@ const RemovePosts = () => {
 		console.log(index);
 
 		let postID = ids[index];
-		console.log(postID);
 
 		/* delete post proccess */
 		Confirm.show(
@@ -52,37 +56,49 @@ const RemovePosts = () => {
 	};
 
 	return (
-		<div className='min-h-screen flex flex-wrap justify-center'>
-			{data?.map((post, index) => (
-				<div className='lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-72 bg-yellow-600 mt-24 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
-					<div className='lg:w-80 w-full flex justify-center lg:block'>
+		<div className=' flex justify-center items-center flex-wrap '>
+			{data.length ? (
+				data?.map((post, index) => (
+					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-green-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
+						{/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
 						<img
-							className='h-52 lg:rounded-tl-md lg:rounded-bl-md rounded-tr-md rounded-tl-md lg:rounded-tr-none'
+							className='h-52 xl:h-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '
 							src={post.imageUrl}
 							alt=''
 						/>
-					</div>
+						{/* 	</div> */}
 
-					<div className='mt-16 lg:ml-5 lg:w-text_width text-white flex justify-center flex-col'>
-						<p className='font-bold text-lg mb-5'>{post.title}</p>
-						<p className='text-xs mb-1'>Created: {post.createdAt}</p>
+						<div className='mt-16 xl:ml-5 xl:w-text_width   flex justify-center flex-col break-words xl:break-words text-white '>
+							<div className='h-52 xl:h-32 '>
+								<p className='font-bold text-xl mb-5 '>{post.title}</p>
+								<p className='text-xs mb-1'>Created in: {post.createdAt}</p>
 
-						<p className='lg:mr-5 lg:ml-0 text-xs ml-5 mr-5 w-10'>
-							{post.description}
-						</p>
+								<p className='xl:mr-5 xl:ml-0 text-xs ml-5 mr-5  '>
+									{post.description}
+								</p>
+							</div>
 
-						<div className='lg:flex lg:flex-row mt-7 items-center  lg:justify-between  flex flex-col lg:ml-0 lg:mr-0 ml-1 mr-1 '>
-							<button
-								onClick={() => {
-									deletePost(index);
-								}}
-								className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 lg:mr-5 mb-5'>
-								Delete
-							</button>
+							<div className='xl:flex xl:flex-row mt-7 items-center  xl:justify-between  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
+								<button
+									onClick={() => {
+										deletePost(index);
+									}}
+									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+									Delete
+								</button>
+							</div>
 						</div>
 					</div>
+				))
+			) : (
+				<div className='flex flex-col justify-center items-center mt-32'>
+					<img src={noData} alt='' className='w-52 h-52' />
+
+					<h1 className='sm:text-md text-sm text-center'>
+						There is No Posts to Remove
+					</h1>
 				</div>
-			))}
+			)}
 			<Toaster position='top-center' />
 		</div>
 	);

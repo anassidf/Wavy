@@ -66,7 +66,6 @@ const ShareForm = () => {
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
       console.log(todaysDate);
-      console.log(imageUrl);
       /* create a document for a new post  */
 
       addDoc(collection(db, "Posts"), {
@@ -79,7 +78,7 @@ const ShareForm = () => {
         status: "under review",
       })
         .then(() => {
-          toast.success("Post is under review now");
+          toast.success("Post is under review now ");
         })
         .catch((error) => {
           console.log(error.message);

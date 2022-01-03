@@ -43,6 +43,7 @@ const GoogleApi = ({ action }) => {
           postsID: [],
           reviewsID: [],
           cityToGuideIn: "",
+          isTourGuideAccepted: false,
         })
           .then((res) => {
             action === "login"

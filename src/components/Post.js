@@ -13,8 +13,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 const Post = ({ post }) => {
-  const { createdAt, description, imageUrl, likes, placeName, status, uid } =
-    post;
+  const { createdAt, description, imageUrl, likes, title, status, uid } = post;
   const [readMore, setReadMore] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
@@ -28,7 +27,7 @@ const Post = ({ post }) => {
     setIsUserInfoLoading(true);
     const docSnap = await getDoc(doc(db, "Users", uid));
     const userData = docSnap.data();
-    setFullName(userData?.fullName);
+    setFullName(userData?.name);
     setProfilePicture(userData?.photo);
   };
   useEffect(() => {
@@ -40,7 +39,7 @@ const Post = ({ post }) => {
         <img
           className='block min-w-full aspect-w-16 aspect-h-9 max-h-72 object-cover object-center hover:transition duration-200 ease-in-out transform hover:scale-105'
           src={imageUrl}
-          alt={placeName}
+          alt={title}
         />
 
         <div className='flex mt-3 mx-3 p-2'>
@@ -50,15 +49,20 @@ const Post = ({ post }) => {
             alt={fullName}
           />
           <div className='ml-3'>
-            <Link to={"/profile-page/" + uid}>
-              <p className='text-lg font-bold'>{fullName}</p>
-            </Link>
+            {uid === "guest" ? (
+              <p className='text-lg font-bold'>Guest</p>
+            ) : (
+              <Link to={"/profile-page/" + uid}>
+                <p className='text-lg font-bold'>{fullName}</p>
+              </Link>
+            )}
+
             <p className='text-sm'>{createdAt}</p>
           </div>
         </div>
         <hr className='mx-4' />
         <div className=' m-3'>
-          <p className='m-4 mb-0 text-2xl'>{placeName}</p>
+          <p className='m-4 mb-0 text-2xl'>{title}</p>
           <p className='mx-0 my-4 py-0 px-4 text-base'>
             {readMore ? description : `${description.substring(0, 100)}...`}
             <button

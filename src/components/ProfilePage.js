@@ -98,7 +98,7 @@ const ProfilePageNew = () => {
     setIsUserInfoLoading(true);
     const docSnap = await getDoc(doc(db, "Users", uid));
     const userData = docSnap.data();
-    setFullName(userData.fullName);
+    setFullName(userData.name);
     setBusinessEmail(userData.businessEmail);
     setDateOfBirth(userData.dateOfBirth);
     setInfo(userData.description);
