@@ -37,29 +37,29 @@ const Explore = () => {
     fetchPosts();
   }, []);
   return (
-    <div className="">
-      <div className="relative bg-gray-300  h-40 flex items-end justify-center">
+    <div className=''>
+      <div className='relative bg-gray-300  h-40 flex items-end justify-center'>
         <input
-          type="text"
+          type='text'
           value={search}
-          className="rounded-t-2xl rounded-b-2xl border-none outline-none pl-5 py-2 mb-8 tracking-widest w-60 sm:w-80 mx-12"
-          placeholder="Where to Go?"
+          className='rounded-t-2xl rounded-b-2xl border-none outline-none pl-5 py-2 mb-8 tracking-widest w-60 sm:w-80 mx-12'
+          placeholder='Where to Go?'
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
-      <div className="flex flex-wrap justify-center">
+      <div className='flex flex-wrap justify-center'>
         {isPostsLoading && (
-          <div className="w-full h-screen flex justify-center items-center">
-            <h1 className="text-2xl">Loading...</h1>
+          <div className='w-full h-screen flex justify-center items-center'>
+            <h1 className='text-2xl'>Loading...</h1>
           </div>
         )}
         {doSearch(posts).length !== 0 ? (
           doSearch(posts).map((post, index) => <Post post={post} key={index} />)
         ) : (
-          <div className="flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2">
-            <img src={emptyData} alt="Empty Data!" className="w-72 h-72" />
-            <p className="text-gray-400 text-3xl">No Data Found!</p>
+          <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+            <img src={emptyData} alt='Empty Data!' className='w-72 h-72' />
+            <p className='text-gray-400 text-3xl'>No Data Found!</p>
           </div>
         )}
       </div>

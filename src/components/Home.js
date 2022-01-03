@@ -5,6 +5,7 @@ import herosectionSVG from '../assets/herosectionSVG.svg';
 
 import Share from './Share';
 import { useEffect } from 'react';
+import RecommendedPlaces from './RecommendedPlaces';
 const Home = () => {
 	return (
 		<div className=''>
@@ -30,6 +31,7 @@ const Home = () => {
 			</div>
 
 			<Share />
+			<RecommendedPlaces />
 		</div>
 	);
 };
