@@ -1,42 +1,129 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import levi from "../assets/attack_on_titan_levi.jpg";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import data from "./data";
+import { useParams, useHistory } from "react-router-dom";
 import reviewsData from "./reviews";
+import emptyData from "../assets/emptyData.svg";
 import PostCardInProfilePage from "./PostCardInProfilePage";
 import Review from "./Review";
 import { FaChevronLeft, FaChevronRight, FaCircle } from "react-icons/fa";
 import { GoLocation } from "react-icons/go";
-
-const ProfilePage = () => {
-  const [profilePicture, setprofilePicture] = useState(levi);
-  const [fullName, setfullName] = useState("Mohamed Nserat");
-  const [email, setemail] = useState("nserat.m7mad@gmail.com");
-  const [phoneNumber, setphoneNumber] = useState("0792063198");
+import { HiOutlineMail } from "react-icons/hi";
+import { FcEditImage } from "react-icons/fc";
+import { BsTelephone } from "react-icons/bs";
+import { MdDateRange, MdModeEditOutline } from "react-icons/md";
+import EditSettingsDialog from "./EditSettingsDialog";
+import BecomeATourGuideForm from "./BecomeATourGuideForm";
+import ChangeProfilePicDialog from "./ChangeProfilePicDialog";
+import { auth, db } from "../firebaseConfig";
+import data from "./data";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+const ProfilePageNew = () => {
+  const [profilePicture, setProfilePicture] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [businessEmail, setBusinessEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isAvailable, setisAvailable] = useState(true);
-  const [posts, setposts] = useState(data);
-  const [likedPosts, setLikedPosts] = useState(data);
-  const [reviews, setreviews] = useState(reviewsData);
-  const [tabsValue, setTabsValue] = useState("Posts");
-  const [dob, setdob] = useState("17/11/1999");
-  const [location, setlocation] = useState("Jordan,Irbid");
+  const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [isTourGuide, setIsTourGuide] = useState(true);
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [address, setAddress] = useState("");
+  const [cityToGuideIn, setCityToGuideIn] = useState("");
   const [postIndex, setPostIndex] = useState(0);
-  const [LikedPostIndex, setLikedPostIndex] = useState(0);
+  const [likedPostIndex, setLikedPostIndex] = useState(0);
   const [reviewIndex, setReviewIndex] = useState(0);
-  const [info, setinfo] = useState(
-    "  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit, maiores similique unde corporis modi odio adipisci, minus alias obcaecati suscipit, commodi non nihil harum amet omnis rem error sunt accusamus!"
-  );
-
-  const handleChange = (event, newValue) => {
-    setTabsValue(newValue);
-    console.log(posts);
+  const [info, setInfo] = useState("");
+  const [selectedView, setSelectedView] = useState("posts");
+  const [isEditFormOpened, setIsEditFormOpened] = useState(false);
+  const [isProfilePageLoading, setIsProfilePageLoading] = useState(true);
+  const [isPostsLoading, setIsPostsLoading] = useState(true);
+  const [islikedPostsLoading, setIslikedPostsLoading] = useState(true);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(true);
+  const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
+  const [isChangeProfilePicOpen, setIsChangeProfilePicOpen] = useState(false);
+  const [isBecomeATourGuideFormOpened, setIsBecomeATourGuideFormOpened] =
+    useState(false);
+  const params = useParams();
+  const uid = params.uid;
+  const currentUserID = auth.currentUser.uid;
+  const fetchPosts = async () => {
+    setIsPostsLoading(true);
+    let arrayOfPosts = [];
+    const docSnap = await getDoc(doc(db, "Users", uid));
+    const userData = docSnap.data();
+    userData.postsID.map(async (id) => {
+      const docSnap = await getDoc(doc(db, "Posts", id));
+      const postData = docSnap.data();
+      arrayOfPosts.push(postData);
+    });
+    setPosts(arrayOfPosts);
+    setIsPostsLoading(false);
+  };
+  const fetchlikedPosts = async () => {
+    setIslikedPostsLoading(true);
+    let arrayOfLikedPosts = [];
+    const docSnap = await getDoc(doc(db, "Users", uid));
+    const userData = docSnap.data();
+    userData.likedPostsID.map(async (id) => {
+      const docSnap = await getDoc(doc(db, "Posts", id));
+      const postData = docSnap.data();
+      arrayOfLikedPosts.push(postData);
+    });
+    setLikedPosts(arrayOfLikedPosts);
+    setIslikedPostsLoading(false);
+  };
+  const fetchReviews = async () => {
+    setIsReviewsLoading(true);
+    let arrayOfReviews = [];
+    const docSnap = await getDoc(doc(db, "Users", uid));
+    const userData = docSnap.data();
+    userData.reviewsID.map(async (id) => {
+      const docSnap = await getDoc(doc(db, "reviews", id));
+      const reviewData = docSnap.data();
+      arrayOfReviews.push(reviewData);
+    });
+    setReviews(arrayOfReviews);
+    setIsReviewsLoading(false);
+  };
+  const fetchUserInfo = async () => {
+    setIsUserInfoLoading(true);
+    const docSnap = await getDoc(doc(db, "Users", uid));
+    const userData = docSnap.data();
+    setFullName(userData.name);
+    setBusinessEmail(userData.businessEmail);
+    setDateOfBirth(userData.dateOfBirth);
+    setInfo(userData.description);
+    setPhoneNumber(userData.phoneNumber);
+    setProfilePicture(userData.photo);
+    setAddress(userData.address);
+    setIsTourGuide(userData.isTourGuide);
+    setCityToGuideIn(userData.cityToGuideIn);
+    userData.status === "Available"
+      ? setisAvailable(true)
+      : setisAvailable(false);
+    setIsUserInfoLoading(false);
   };
   useEffect(() => {
-    setposts(data);
-    setLikedPosts(data);
+    setIsProfilePageLoading(true);
+    fetchPosts();
+    fetchlikedPosts();
+    fetchReviews();
+    fetchUserInfo();
+    setTimeout(() => {
+      setIsProfilePageLoading(false);
+    }, 2000);
   }, []);
-  const checkNumber = (number) => {
+
+  const checkNumberForPosts = (number) => {
     if (number > posts.length - 1) {
       return 0;
     }
@@ -45,135 +132,345 @@ const ProfilePage = () => {
     }
     return number;
   };
+  const checkNumberForLikedPosts = (number) => {
+    if (number > likedPosts.length - 1) {
+      return 0;
+    }
+    if (number < 0) {
+      return likedPosts.length - 1;
+    }
+    return number;
+  };
+  const checkNumberForReviews = (number) => {
+    if (number > reviews.length - 1) {
+      return 0;
+    }
+    if (number < 0) {
+      return reviews.length - 1;
+    }
+    return number;
+  };
   const nextPost = () => {
     setPostIndex((index) => {
       let newIndex = index + 1;
-      return checkNumber(newIndex);
+      return checkNumberForPosts(newIndex);
     });
   };
   const prevPost = () => {
     setPostIndex((index) => {
       let newIndex = index - 1;
-      return checkNumber(newIndex);
+      return checkNumberForPosts(newIndex);
     });
   };
   const nextReview = () => {
     setReviewIndex((index) => {
       let newIndex = index + 1;
-      return checkNumber(newIndex);
+      return checkNumberForReviews(newIndex);
     });
   };
   const prevReview = () => {
     setReviewIndex((index) => {
       let newIndex = index - 1;
-      return checkNumber(newIndex);
+      return checkNumberForReviews(newIndex);
     });
   };
   const nextLikedPost = () => {
     setLikedPostIndex((index) => {
       let newIndex = index + 1;
-      return checkNumber(newIndex);
+      return checkNumberForLikedPosts(newIndex);
     });
   };
   const prevLikedPost = () => {
     setLikedPostIndex((index) => {
       let newIndex = index - 1;
-      return checkNumber(newIndex);
+      return checkNumberForLikedPosts(newIndex);
     });
   };
 
   return (
+    /* TODO make it responsive */ /*  */
     <>
-      <div className=" bg-gray-300  h-16 flex items-end justify-center"></div>
-      <div className=" h-72 bg-gray-700 w-full">
-        <div className=" relative flex pt-12 pl-44 text-white">
-          <div>
-            <img
-              src={profilePicture}
-              alt={fullName}
-              className="inline object-cover h-32 w-32 rounded-3xl"
-            />
-          </div>
-          <div className="ml-10 ">
-            <p className="text-3xl">{fullName}</p>
-            <div className="mb-3 mt-2">
-              <p className="inline">Born: {dob}</p>
-              <div className="pl-6 inline">
-                <GoLocation size={18} className="mr-1 text-gray-300 inline" />
-                <p className="inline ">{location}</p>
-              </div>
-              {isAvailable ? (
-                <div className="mt-2">
-                  <FaCircle size={10} className="inline mr-1 text-green-500" />
-                  <p className="mt-2 inline">Available</p>
-                </div>
-              ) : (
-                <div className="mt-2">
-                  <FaCircle size={10} className="inline mr-1 text-red-500" />
-                  <p className="mt-2 inline">Reserved</p>
+      {isProfilePageLoading ? (
+        <div className='w-full h-screen flex justify-center items-center'>
+          <h1 className='text-2xl'>Loading...</h1>
+        </div>
+      ) : (
+        <div className='flex flex-col mb-7 md:flex-row '>
+          {isUserInfoLoading ? (
+            <div className='w-full h-screen flex justify-center items-center'>
+              <h1 className='text-2xl'>Loading...</h1>
+            </div>
+          ) : (
+            <section className='mt-20 flex flex-col items-center shadow-xl md:ml-8 md:w-1/3'>
+              {currentUserID === uid && (
+                <div
+                  className='flex self-end justify-start items-center mr-4 mt-4 cursor-pointer'
+                  onClick={() => setIsEditFormOpened(!isEditFormOpened)}
+                >
+                  <p>Edit</p>
+                  <MdModeEditOutline size={20} className='ml-1' />
                 </div>
               )}
-            </div>
-            <p className="text-gray-400 w-3/5">{info}</p>
-          </div>
-        </div>
-        <section className="absolute left-36 top-80 bg-white rounded-md block shadow-2xl w-1/2">
-          <Tabs
-            value={tabsValue}
-            onChange={handleChange}
-            textColor="primary"
-            indicatorColor="primary"
-            aria-label="primary tabs example"
-          >
-            <Tab value="Posts" label="Posts" />
-            <Tab value="LikedPosts" label="Liked Posts" />
-            <Tab value="Reviews" label="Reviews" />
-          </Tabs>
 
-          <div className="mx-4 mt-4">
-            {tabsValue === "Posts" ? (
-              <PostCardInProfilePage post={posts[postIndex]} />
-            ) : tabsValue === "LikedPosts" ? (
-              <PostCardInProfilePage post={likedPosts[LikedPostIndex]} />
+              <div className='relative'>
+                <img
+                  src={profilePicture}
+                  alt={fullName}
+                  className='object-cover rounded-full w-28 h-28 sm:w-44 sm:h-44'
+                />
+                {currentUserID === uid && (
+                  <div className='w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover bg-gray-100 flex justify-center items-center absolute bottom-0 left-0 cursor-pointer'>
+                    <FcEditImage
+                      size={24}
+                      onClick={() => setIsChangeProfilePicOpen(true)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <p className='text-xl sm:text-2xl text-center sm:mx-0 mt-2 overflow-hidden'>
+                {fullName}
+              </p>
+              <div className='flex flex-col items-start'>
+                <div className='flex mt-1 justify-start items-center'>
+                  <MdDateRange size={20} className='mr-3' />
+                  <p className='mt-2 text-center'>{dateOfBirth}</p>
+                </div>
+                <div className='flex mt-1 justify-start items-center overflow-hidden'>
+                  <GoLocation size={20} className='mr-3' />
+                  <p className='text-center'>{address}</p>
+                </div>
+                {isTourGuide &&
+                  (isAvailable ? (
+                    <div className='flex mt-1 justify-start items-center'>
+                      <FaCircle
+                        size={12}
+                        className='mr-4 ml-1 text-green-500'
+                      />
+                      <p className=''>Available</p>
+                    </div>
+                  ) : (
+                    <div className='flex mt-1 justify-start items-center'>
+                      <FaCircle size={12} className='mr-4 ml-1 text-red-500' />
+                      <p className=''>Reserved</p>
+                    </div>
+                  ))}
+              </div>
+              {/* {isTourGuide && (
+                <div className="">
+                  <p className="text-black">
+                    I Can Guide in {cityToGuideIn} City!
+                  </p>
+                </div>
+              )} */}
+              <div className='flex flex-col items-center my-1 sm:items-start mx-4 w-60 sm:w-80 md:w-56 lg:w-72 xl:w-96'>
+                <div className='shadow'>
+                  <h2 className='pt-2 pl-4 text-xl'>About Me:</h2>
+                  <p className='px-4 py-1 text-xs sm:text-sm xl:text-base overflow-hidden'>
+                    {info}
+                  </p>
+                </div>
+                <div className='shadow my-3 w-full overflow-hidden'>
+                  <h2 className='pt-2 pl-4 text-xl mb-3'>Contact Me:</h2>
+                  <div className='px-4 my-2 flex justify-start items-center'>
+                    <BsTelephone size={20} className='mr-3' />
+                    <p className='text-sm md:text-base'>{phoneNumber}</p>
+                  </div>
+                  <div className='px-4 flex justify-start items-center mb-3'>
+                    <HiOutlineMail size={20} className='mr-3' />
+                    <p className='text-sm md:text-base'>{businessEmail}</p>
+                  </div>
+                </div>
+              </div>
+              {currentUserID === uid && !isTourGuide && (
+                <button
+                  onClick={() => setIsBecomeATourGuideFormOpened(true)}
+                  className=' bg-pink-600 hover:bg-opacity-95 p-3 mb-2 md:mb-4 rounded-full shadow-md text-white transform hover:scale-110 hover:shadow-xl transition-all duration-300 ease-in-out'
+                >
+                  Become a Tour guide
+                </button>
+              )}
+            </section>
+          )}
+
+          <section className='shadow-xl flex flex-col mt-10 md:mt-20 md:ml-10 md:mr-5 xl:mr-16 md:w-2/3'>
+            <div className='flex pt-1 justify-start md:p-3'>
+              <p
+                className={
+                  selectedView === "posts"
+                    ? "mx-5 border-b-2 border-black cursor-pointer"
+                    : "mx-5 text-gray-400 cursor-pointer"
+                }
+                onClick={() => setSelectedView("posts")}
+              >
+                Posts
+              </p>
+              {currentUserID === uid && (
+                <p
+                  className={
+                    selectedView === "liked posts"
+                      ? "mx-5 cursor-pointer border-b-2 border-black"
+                      : "mx-5 text-gray-400 cursor-pointer"
+                  }
+                  onClick={() => setSelectedView("liked posts")}
+                >
+                  Liked Posts
+                </p>
+              )}
+
+              <p
+                className={
+                  selectedView === "reviews"
+                    ? "mx-5 border-b-2 border-black cursor-pointer"
+                    : "mx-5 text-gray-400 cursor-pointer"
+                }
+                onClick={() => setSelectedView("reviews")}
+              >
+                Reviews
+              </p>
+            </div>
+            {selectedView === "posts" ? (
+              <div>
+                {isPostsLoading ? (
+                  <div className='w-full h-screen flex justify-center items-center'>
+                    <h1 className='text-2xl'>Loading...</h1>
+                  </div>
+                ) : //<h1>hiii</h1>
+                posts.length > 0 ? (
+                  <PostCardInProfilePage post={posts[postIndex]} />
+                ) : (
+                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                    <img
+                      src={emptyData}
+                      alt='Empty Data!'
+                      className='w-72 h-72'
+                    />
+                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                  </div>
+                )}
+              </div>
+            ) : selectedView === "liked posts" ? (
+              <div>
+                {islikedPostsLoading ? (
+                  <div className='w-full h-full flex justify-center items-center'>
+                    <h1 className='text-2xl'>Loading...</h1>
+                  </div>
+                ) : //<h1>hii</h1>
+                likedPosts.length > 0 ? (
+                  <PostCardInProfilePage post={likedPosts[likedPostIndex]} />
+                ) : (
+                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                    <img
+                      src={emptyData}
+                      alt='Empty Data!'
+                      className='w-72 h-72'
+                    />
+                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                  </div>
+                )}
+              </div>
             ) : (
-              <Review review={reviews[reviewIndex]} />
+              <div>
+                {isReviewsLoading ? (
+                  <div className='w-full h-full flex justify-center items-center'>
+                    <h1 className='text-2xl'>Loading...</h1>
+                  </div>
+                ) : reviews.length > 0 ? (
+                  <Review review={reviews[reviewIndex]} />
+                ) : (
+                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                    <img
+                      src={emptyData}
+                      alt='Empty Data!'
+                      className='w-72 h-72'
+                    />
+                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                  </div>
+                )}
+              </div>
             )}
-            <div className="flex justify-center my-4">
-              <FaChevronLeft
-                className="w-11 h-11 cursor-pointer inline text-blue-400"
+            <div className='flex justify-around my-3 md:my-14 '>
+              <div
+                className='cursor-pointer flex hover:opacity-80 text-sm sm:text-base items-center'
                 onClick={
-                  tabsValue === "Posts"
+                  selectedView === "posts"
                     ? prevPost
-                    : tabsValue === "LikedPosts"
+                    : selectedView === "liked posts"
                     ? prevLikedPost
                     : prevReview
                 }
-              />
-              <FaChevronRight
-                className="w-11 h-11 cursor-pointer inline ml-4 text-blue-400"
+              >
+                <FaChevronLeft size={27} className='mr-1 ' />
+                {selectedView === "reviews" ? (
+                  <p>Previous Review</p>
+                ) : (
+                  <p>Previous Post</p>
+                )}
+              </div>
+              <div
+                className='flex cursor-pointer hover:opacity-80 text-sm sm:text-base items-center'
                 onClick={
-                  tabsValue === "Posts"
+                  selectedView === "posts"
                     ? nextPost
-                    : tabsValue === "LikedPosts"
+                    : selectedView === "liked posts"
                     ? nextLikedPost
                     : nextReview
                 }
-              />
+              >
+                {selectedView === "reviews" ? (
+                  <p>Next Review</p>
+                ) : (
+                  <p>Next Post</p>
+                )}
+                <FaChevronRight size={27} className='ml-1' />
+              </div>
             </div>
-          </div>
-        </section>
-        <section className="absolute top-80 right-28 bg-white rounded-md block shadow-2xl w-1/5 h-60">
-          <div className="m-4">
-            <h3 className="text-xl">Contact me:</h3>
-            <p className="text-base mt-3 mb-2"> {email}</p>
-            <div className="flex items-center space-x-1">
-              <p className="text-base">{phoneNumber}</p>
-            </div>
-          </div>
-        </section>
-      </div>
+          </section>
+        </div>
+      )}
+      {isEditFormOpened && (
+        <EditSettingsDialog
+          trigger={isEditFormOpened}
+          isEditFormOpened={isEditFormOpened}
+          setIsEditFormOpened={setIsEditFormOpened}
+          fullName={fullName}
+          setFullName={setFullName}
+          profilePicture={profilePicture}
+          setProfilePicture={setProfilePicture}
+          businessEmail={businessEmail}
+          setBusinessEmail={setBusinessEmail}
+          phoneNumber={phoneNumber}
+          setPhoneNumber={setPhoneNumber}
+          dateOfBirth={dateOfBirth}
+          setDateOfBirth={setDateOfBirth}
+          address={address}
+          setAddress={setAddress}
+          info={info}
+          setInfo={setInfo}
+          cityToGuideIn={cityToGuideIn}
+          setCityToGuideIn={setCityToGuideIn}
+          isAvailable={isAvailable}
+          setisAvailable={setisAvailable}
+          isTourGuide={isTourGuide}
+        />
+      )}
+      {isBecomeATourGuideFormOpened && (
+        <BecomeATourGuideForm
+          setIsBecomeATourGuideFormOpened={setIsBecomeATourGuideFormOpened}
+          cityToGuideIn={cityToGuideIn}
+          setCityToGuideIn={setCityToGuideIn}
+          setIsTourGuide={setIsTourGuide}
+        />
+      )}
+      {isChangeProfilePicOpen && (
+        <ChangeProfilePicDialog
+          setIsChangeProfilePicOpen={setIsChangeProfilePicOpen}
+          profilePicture={profilePicture}
+          setProfilePicture={setProfilePicture}
+        />
+      )}
     </>
   );
 };
 
-export default ProfilePage;
+export default ProfilePageNew;
