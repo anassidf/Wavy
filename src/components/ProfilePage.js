@@ -24,6 +24,7 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  documentId,
 } from "firebase/firestore";
 const ProfilePageNew = () => {
   const [profilePicture, setProfilePicture] = useState("");
@@ -53,100 +54,132 @@ const ProfilePageNew = () => {
   const [isBecomeATourGuideFormOpened, setIsBecomeATourGuideFormOpened] =
     useState(false);
   const params = useParams();
-  const uid = params.uid;
-  const currentUserID = auth.currentUser.uid;
+  const uid = params?.uid;
+  const [currentUserID, setCurrentUserID] = useState("");
+
   const fetchPosts = async () => {
     setIsPostsLoading(true);
     let arrayOfPosts = [];
-    const docSnap = await getDoc(doc(db, "Users", uid));
-    const userData = docSnap.data();
-    userData.postsID.map(async (id) => {
-      const docSnap = await getDoc(doc(db, "Posts", id));
-      const postData = docSnap.data();
-      arrayOfPosts.push(postData);
-    });
-    setPosts(arrayOfPosts);
-    setIsPostsLoading(false);
+    await getDoc(doc(db, "Users", uid))
+      .then((resp) => {
+        const userData = resp?.data();
+        userData?.postsID?.map(async (id) => {
+          await getDoc(doc(db, "Posts", id))
+            .then((resp) => {
+              const postData = resp?.data();
+              arrayOfPosts?.push(postData);
+            })
+            .catch((err) => console.log(err));
+        });
+        setPosts(arrayOfPosts);
+        setIsPostsLoading(false);
+      })
+      .catch((err) => console.log(err));
   };
   const fetchlikedPosts = async () => {
     setIslikedPostsLoading(true);
     let arrayOfLikedPosts = [];
-    const docSnap = await getDoc(doc(db, "Users", uid));
-    const userData = docSnap.data();
-    userData.likedPostsID.map(async (id) => {
-      const docSnap = await getDoc(doc(db, "Posts", id));
-      const postData = docSnap.data();
-      arrayOfLikedPosts.push(postData);
-    });
-    setLikedPosts(arrayOfLikedPosts);
-    setIslikedPostsLoading(false);
+    await getDoc(doc(db, "Users", uid))
+      .then((resp) => {
+        const userData = resp?.data();
+        userData?.likedPostsID?.map(async (id) => {
+          await getDoc(doc(db, "Posts", id))
+            .then((resp) => {
+              const postData = resp?.data();
+              arrayOfLikedPosts?.push(postData);
+            })
+            .catch((err) => console.log(err));
+        });
+
+        setLikedPosts(arrayOfLikedPosts);
+        setIslikedPostsLoading(false);
+      })
+      .catch((err) => console.log(err));
   };
   const fetchReviews = async () => {
     setIsReviewsLoading(true);
     let arrayOfReviews = [];
-    const docSnap = await getDoc(doc(db, "Users", uid));
-    const userData = docSnap.data();
-    userData.reviewsID.map(async (id) => {
-      const docSnap = await getDoc(doc(db, "reviews", id));
-      const reviewData = docSnap.data();
-      arrayOfReviews.push(reviewData);
-    });
-    setReviews(arrayOfReviews);
-    setIsReviewsLoading(false);
+    await getDoc(doc(db, "Users", uid))
+      .then((resp) => {
+        const userData = resp?.data();
+        userData?.reviewsID?.map(async (id) => {
+          await getDoc(doc(db, "reviews", id))
+            .then((resp) => {
+              const reviewData = resp?.data();
+              arrayOfReviews?.push(reviewData);
+            })
+            .catch((err) => console.log(err));
+        });
+        setReviews(arrayOfReviews);
+        setIsReviewsLoading(false);
+      })
+      .catch((err) => console.log(err));
   };
   const fetchUserInfo = async () => {
     setIsUserInfoLoading(true);
-    const docSnap = await getDoc(doc(db, "Users", uid));
-    const userData = docSnap.data();
-    setFullName(userData.name);
-    setBusinessEmail(userData.businessEmail);
-    setDateOfBirth(userData.dateOfBirth);
-    setInfo(userData.description);
-    setPhoneNumber(userData.phoneNumber);
-    setProfilePicture(userData.photo);
-    setAddress(userData.address);
-    setIsTourGuide(userData.isTourGuide);
-    setCityToGuideIn(userData.cityToGuideIn);
-    userData.status === "Available"
-      ? setisAvailable(true)
-      : setisAvailable(false);
-    setIsUserInfoLoading(false);
+    await getDoc(doc(db, "Users", uid))
+      .then((resp) => {
+        const userData = resp?.data();
+        setFullName(userData?.name);
+        setBusinessEmail(userData?.businessEmail);
+        setDateOfBirth(userData?.dateOfBirth);
+        setInfo(userData?.description);
+        setPhoneNumber(userData?.phoneNumber);
+        setProfilePicture(userData?.photo);
+        setAddress(userData?.address);
+        setIsTourGuide(userData?.isTourGuide);
+        setCityToGuideIn(userData?.cityToGuideIn);
+        userData?.status === "Available"
+          ? setisAvailable(true)
+          : setisAvailable(false);
+        setIsUserInfoLoading(false);
+      })
+      .catch((err) => console.log(err));
   };
   useEffect(() => {
     setIsProfilePageLoading(true);
+    const docSnap = getDoc(doc(db, "Users", uid));
     fetchPosts();
     fetchlikedPosts();
     fetchReviews();
     fetchUserInfo();
+    //check if the user logged in or not
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setCurrentUserID(auth?.currentUser?.uid);
+      } else {
+        setCurrentUserID("guest");
+      }
+    });
     setTimeout(() => {
       setIsProfilePageLoading(false);
     }, 2000);
   }, []);
 
   const checkNumberForPosts = (number) => {
-    if (number > posts.length - 1) {
+    if (number > posts?.length - 1) {
       return 0;
     }
     if (number < 0) {
-      return posts.length - 1;
+      return posts?.length - 1;
     }
     return number;
   };
   const checkNumberForLikedPosts = (number) => {
-    if (number > likedPosts.length - 1) {
+    if (number > likedPosts?.length - 1) {
       return 0;
     }
     if (number < 0) {
-      return likedPosts.length - 1;
+      return likedPosts?.length - 1;
     }
     return number;
   };
   const checkNumberForReviews = (number) => {
-    if (number > reviews.length - 1) {
+    if (number > reviews?.length - 1) {
       return 0;
     }
     if (number < 0) {
-      return reviews.length - 1;
+      return reviews?.length - 1;
     }
     return number;
   };
@@ -228,7 +261,7 @@ const ProfilePageNew = () => {
                 )}
               </div>
 
-              <p className='text-xl sm:text-2xl text-center sm:mx-0 mt-2 overflow-hidden'>
+              <p className='text-xl sm:text-2xl text-center sm:mx-0 mt-2 overflow-hidden break-words'>
                 {fullName}
               </p>
               <div className='flex flex-col items-start'>
@@ -238,7 +271,7 @@ const ProfilePageNew = () => {
                 </div>
                 <div className='flex mt-1 justify-start items-center overflow-hidden'>
                   <GoLocation size={20} className='mr-3' />
-                  <p className='text-center'>{address}</p>
+                  <p className='text-center break-words'>{address}</p>
                 </div>
                 {isTourGuide &&
                   (isAvailable ? (
@@ -264,9 +297,9 @@ const ProfilePageNew = () => {
                 </div>
               )} */}
               <div className='flex flex-col items-center my-1 sm:items-start mx-4 w-60 sm:w-80 md:w-56 lg:w-72 xl:w-96'>
-                <div className='shadow'>
+                <div className='shadow w-full'>
                   <h2 className='pt-2 pl-4 text-xl'>About Me:</h2>
-                  <p className='px-4 py-1 text-xs sm:text-sm xl:text-base overflow-hidden'>
+                  <p className='px-4 py-1 text-xs sm:text-sm xl:text-base break-words'>
                     {info}
                   </p>
                 </div>
@@ -278,7 +311,9 @@ const ProfilePageNew = () => {
                   </div>
                   <div className='px-4 flex justify-start items-center mb-3'>
                     <HiOutlineMail size={20} className='mr-3' />
-                    <p className='text-sm md:text-base'>{businessEmail}</p>
+                    <p className='text-sm md:text-base break-words'>
+                      {businessEmail}
+                    </p>
                   </div>
                 </div>
               </div>

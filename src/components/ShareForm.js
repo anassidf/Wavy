@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { db, auth, storage } from "../firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, documentId } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useEffect } from "react";
 import gellary from "../assets/gallery.png";
@@ -36,7 +36,6 @@ const ShareForm = () => {
 
   const handleShareForm = (values) => {
     console.log(values);
-
     /* get url for our image to make it public using firebase/storage */
     if (file.length) {
       const storageRef = ref(storage, `images/${file[0].name}`);
@@ -76,6 +75,7 @@ const ShareForm = () => {
         likes: 0,
         uid: auth.currentUser ? auth.currentUser.uid : "guest",
         status: "under review",
+        //postID: documentId(),
       })
         .then(() => {
           toast.success("Post is under review now ");

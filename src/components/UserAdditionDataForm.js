@@ -21,6 +21,7 @@ const UserAdditionDataForm = () => {
       phoneNumber: values.phoneNumber,
       dateOfBirth: values.dateOfBirth,
       address: values.address,
+      businessEmail: values.businessEmail,
     })
       .then(() => {
         /* redirect the user to his/her profile */
@@ -35,6 +36,7 @@ const UserAdditionDataForm = () => {
     document.getElementById("field2").value = "";
     document.getElementById("field3").value = "";
     document.getElementById("field4").value = "";
+    document.getElementById("field5").value = "";
   };
 
   useEffect(() => {
@@ -70,6 +72,7 @@ const UserAdditionDataForm = () => {
           dateOfBirth: "",
           address: "",
           brief: "",
+          businessEmail: "",
 
           /* brief: '', */
         }}
@@ -125,6 +128,21 @@ const UserAdditionDataForm = () => {
             <div className='relative text-center sm:text-left'>
               <Field
                 id='field4'
+                autoComplete='off'
+                placeholder='Business Email'
+                name='businessEmail'
+                type='email'
+                className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
+              />
+              <ErrorMessage
+                component='div'
+                name='businessEmail'
+                className='text-red-500 text-xs text-center sm:text-left mt-1 sm:ml-5  '
+              />
+            </div>
+            <div className='relative text-center sm:text-left'>
+              <Field
+                id='field5'
                 autoComplete='off'
                 as='textarea'
                 rows='7'

@@ -11,9 +11,10 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  documentId,
 } from "firebase/firestore";
 const Explore = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState({});
   const [search, setSearch] = useState("");
   const [isPostsLoading, setIsPostsLoading] = useState(true);
   const postsCollectionRef = collection(db, "Posts");
@@ -21,57 +22,82 @@ const Explore = () => {
     setIsPostsLoading(true);
     const data = await getDocs(postsCollectionRef);
     setPosts(
-      data.docs.map((doc) => {
-        return doc.data();
+      data?.docs?.map((doc) => {
+        //console.log(doc.data().likes);
+        return { post: doc?.data(), postID: doc?.id };
       })
     );
     setIsPostsLoading(false);
   };
   const doSearch = (cards) => {
-    return cards.filter((card) => {
+    return cards?.filter((card) => {
       if (search === "") return card;
-      else return card.placeName.toLowerCase().includes(search.toLowerCase());
+      else
+        return card?.post?.title
+          ?.toLowerCase()
+          ?.includes(search?.toLowerCase());
     });
   };
+
   useEffect(() => {
     fetchPosts();
+    return () => {};
   }, []);
-  return (
-    <div className=''>
-      <div className='relative bg-gray-300  h-40 flex items-end justify-center'>
-        <input
-          type='text'
-          value={search}
-          className='rounded-t-2xl rounded-b-2xl border-none outline-none pl-5 py-2 mb-8 tracking-widest w-60 sm:w-80 mx-12'
-          placeholder='Where to Go?'
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
 
-      <div className='flex flex-wrap justify-center'>
-        {isPostsLoading && (
-          <div className='w-full h-screen flex justify-center items-center'>
-            <h1 className='text-2xl'>Loading...</h1>
+  return (
+    <>
+      {isPostsLoading ? (
+        <div className='w-full h-screen flex justify-center items-center'>
+          <h1 className='text-2xl'>Loading...</h1>
+        </div>
+      ) : (
+        <div className=''>
+          <div className='h-96  bg-explorePicture bg-cover bg-no-repeat bg-center w-full  flex flex-col  items-center relative'>
+            <div className='bg-black bg-opacity-50 absolute top-0 left-0 right-0 h-full w-full'></div>
+
+            <div className='bg-white shadow-md  w-super_larg lg:w-tour_guide_card flex rounded-full items-center justify-between absolute bottom-10 '>
+              <input
+                value={search}
+                type='text'
+                className='w-32 sm:w-3/4  py-2 sm:px-2 px-1 rounded-full sm:ml-10 ml-5 outline-none sm:text-lg text-sm  '
+                placeholder='Enter The City Name'
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <div className=' flex items-center'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-7 w-7 mr-3 text-gray-500'
+                  viewBox='0 0 20 20'
+                  fill='currentColor'
+                >
+                  <path d='M9 9a2 2 0 114 0 2 2 0 01-4 0z' />
+                  <path
+                    fillRule='evenodd'
+                    d='M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a4 4 0 00-3.446 6.032l-2.261 2.26a1 1 0 101.414 1.415l2.261-2.261A4 4 0 1011 5z'
+                    clipRule='evenodd'
+                  />
+                </svg>
+                <div className='hidden  w-32 h-8   bg-green-400 rounded-full sm:flex justify-center items-center shadow-md mr-3'>
+                  <h1 className='font-bold text-white'>Enjoy</h1>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-        {doSearch(posts).length !== 0 ? (
-          doSearch(posts).map((post, index) => <Post post={post} key={index} />)
-        ) : (
-          <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
-            <img src={emptyData} alt='Empty Data!' className='w-72 h-72' />
-            <p className='text-gray-400 text-3xl'>No Data Found!</p>
+          <div className='flex flex-wrap justify-center'>
+            {doSearch(posts)?.length !== 0 ? (
+              doSearch(posts)?.map((post, index) => (
+                <Post post={post} key={index} />
+              ))
+            ) : (
+              <div className='flex  items-center justify-center flex-col mt-24 mb-24 mx-2'>
+                <img src={emptyData} alt='Empty Data!' className='w-72 h-72' />
+                <p className='text-gray-400 text-3xl'>No Data Found!</p>
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      {/* TODO:: recomended places */}
-      {/* <div className="flex flex-wrap justify-center">
-        {posts.length !== 0 ? (
-          posts.map((post, index) => <Post post={post} key={index} />)
-        ) : (
-          <img src={emptyData} alt="" />
-        )}
-      </div> */}
-    </div>
+        </div>
+      )}
+    </>
   );
 };
 

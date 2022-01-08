@@ -13,6 +13,10 @@ const userFormValidation = yup.object().shape({
     .required("Please enter Brief About your self")
     .min(10, "Brief must be at least 10 characters long")
     .max(150, "Brief must be at most 150 characters long"),
+  businessEmail: yup
+    .string()
+    .email("Please Enter a Valid Email!")
+    .required("Please Enter Your Email!"),
 });
 
 export default userFormValidation;

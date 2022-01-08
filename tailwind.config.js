@@ -35,6 +35,7 @@ module.exports = {
         recommendations_card: 'url("/src/assets/recommendationsCard.png")',
         admin_Image: 'url("/src/assets/adminBackground.jpg")',
         add_recommendations: 'url("/src/assets/addRecommendations.jpg")',
+        explorePicture: 'url("/src/assets/explorePicture.jpg")',
       },
     },
   },
