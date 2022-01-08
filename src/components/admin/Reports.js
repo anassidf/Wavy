@@ -12,15 +12,12 @@ import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
 import noData from '../../assets/noData.svg';
 
-const RemovePosts = () => {
+const Reports = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
 	useEffect(async () => {
 		/*  getting posts data */
-		const docsRef = query(
-			collection(db, 'Posts'),
-			where('status', '==', 'approaved')
-		);
+		const docsRef = query(collection(db, 'Reports'));
 		const posts = await getDocs(docsRef);
 		let temp = new Array();
 		let ids = new Array();
@@ -35,55 +32,48 @@ const RemovePosts = () => {
 	}, []);
 
 	/* delete post methode */
-	const deletePost = async (index) => {
-		console.log(index);
-
+	const deleteReport = async (index) => {
 		let postID = ids[index];
 
 		/* delete post proccess */
 		Confirm.show(
-			'Delete Post',
+			'Delete Report',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
-				await deleteDoc(doc(db, 'Posts', postID));
-				toast.success('Post deleted successfully');
+				await deleteDoc(doc(db, 'Reports', postID));
+				toast.success('Report Deleted Successfully');
 			},
 			() => {},
 			{}
 		);
 	};
-
 	return (
-		<div className=' flex justify-center items-center flex-wrap '>
+		<div className='min-h-screen  flex-1 bg-gray-200 flex justify-center items-center flex-wrap '>
 			{data.length ? (
 				data?.map((post, index) => (
-					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-green-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
-						{/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
-						<img
-							className='h-52 w-72 xl:h-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '
-							src={post.imageUrl}
-							alt=''
-						/>
-						{/* 	</div> */}
-
+					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-pink-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
 						<div className='mt-16 xl:ml-5 xl:w-text_width   flex justify-center flex-col break-words xl:break-words text-white '>
 							<div className='h-52 xl:h-32 '>
-								<p className='font-bold text-xl mb-5 '>{post.title}</p>
-								<p className='text-xs mb-1'>Created in: {post.createdAt}</p>
+								<p className='text-xs  xl:text-lg mb-2 '>
+									Reporter ID: {post.reporterId}
+								</p>
+								<p className='text-xs xl:text-lg mb-5 '>
+									Report On ID: {post.reportOnId}
+								</p>
 
-								<p className='xl:mr-5 xl:ml-0 text-xs ml-5 mr-5  '>
-									{post.description}
+								<p className='xl:mr-5 xl:ml-0  ml-5 mr-5  text-xs xl:text-base '>
+									{post.report}
 								</p>
 							</div>
 
 							<div className='xl:flex xl:flex-row mt-7 items-center  xl:justify-between  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
 								<button
 									onClick={() => {
-										deletePost(index);
+										deleteReport(index);
 									}}
-									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+									className=' text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
 									Delete
 								</button>
 							</div>
@@ -104,4 +94,4 @@ const RemovePosts = () => {
 	);
 };
 
-export default RemovePosts;
+export default Reports;
