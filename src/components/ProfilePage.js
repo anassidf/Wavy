@@ -10,6 +10,7 @@ import { GoLocation } from "react-icons/go";
 import { HiOutlineMail } from "react-icons/hi";
 import { FcEditImage } from "react-icons/fc";
 import { BsTelephone } from "react-icons/bs";
+import { Loading } from "notiflix/build/notiflix-loading-aio";
 import { MdDateRange, MdModeEditOutline } from "react-icons/md";
 import EditSettingsDialog from "./EditSettingsDialog";
 import BecomeATourGuideForm from "./BecomeATourGuideForm";
@@ -26,6 +27,7 @@ import {
   deleteDoc,
   documentId,
 } from "firebase/firestore";
+import ReviewForm from "./reviewForm";
 const ProfilePageNew = () => {
   const [profilePicture, setProfilePicture] = useState("");
   const [fullName, setFullName] = useState("");
@@ -51,6 +53,7 @@ const ProfilePageNew = () => {
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
   const [isUserInfoLoading, setIsUserInfoLoading] = useState(true);
   const [isChangeProfilePicOpen, setIsChangeProfilePicOpen] = useState(false);
+  const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
   const [isBecomeATourGuideFormOpened, setIsBecomeATourGuideFormOpened] =
     useState(false);
   const params = useParams();
@@ -111,7 +114,9 @@ const ProfilePageNew = () => {
             .catch((err) => console.log(err));
         });
         setReviews(arrayOfReviews);
-        setIsReviewsLoading(false);
+        setTimeout(() => {
+          setIsReviewsLoading(false);
+        }, 1000);
       })
       .catch((err) => console.log(err));
   };
@@ -138,10 +143,8 @@ const ProfilePageNew = () => {
   };
   useEffect(() => {
     setIsProfilePageLoading(true);
-    const docSnap = getDoc(doc(db, "Users", uid));
     fetchPosts();
     fetchlikedPosts();
-    fetchReviews();
     fetchUserInfo();
     //check if the user logged in or not
     auth.onAuthStateChanged((user) => {
@@ -154,8 +157,12 @@ const ProfilePageNew = () => {
     setTimeout(() => {
       setIsProfilePageLoading(false);
     }, 2000);
-  }, []);
+  }, [uid]);
+  useEffect(() => {
+    fetchReviews();
 
+    return () => {};
+  }, [isReviewFormOpen, uid]);
   const checkNumberForPosts = (number) => {
     if (number > posts?.length - 1) {
       return 0;
@@ -225,16 +232,18 @@ const ProfilePageNew = () => {
     <>
       {isProfilePageLoading ? (
         <div className='w-full h-screen flex justify-center items-center'>
-          <h1 className='text-2xl'>Loading...</h1>
+          {Loading.circle()}
         </div>
       ) : (
         <div className='flex flex-col mb-7 md:flex-row '>
+          {Loading.remove()}
           {isUserInfoLoading ? (
             <div className='w-full h-screen flex justify-center items-center'>
-              <h1 className='text-2xl'>Loading...</h1>
+              {Loading.circle()}
             </div>
           ) : (
             <section className='mt-20 flex flex-col items-center shadow-xl md:ml-8 md:w-1/3'>
+              {Loading.remove()}
               {currentUserID === uid && (
                 <div
                   className='flex self-end justify-start items-center mr-4 mt-4 cursor-pointer'
@@ -325,6 +334,16 @@ const ProfilePageNew = () => {
                   Become a Tour guide
                 </button>
               )}
+              {currentUserID !== uid && isTourGuide && (
+                <button
+                  onClick={() => {
+                    setIsReviewFormOpen(true);
+                  }}
+                  className=' bg-pink-600 hover:bg-opacity-95 p-3 mb-2 md:mb-4 rounded-full shadow-md text-white transform hover:scale-110 hover:shadow-xl transition-all duration-300 ease-in-out'
+                >
+                  Make a Review
+                </button>
+              )}
             </section>
           )}
 
@@ -370,17 +389,18 @@ const ProfilePageNew = () => {
                   <div className='w-full h-screen flex justify-center items-center'>
                     <h1 className='text-2xl'>Loading...</h1>
                   </div>
-                ) : //<h1>hiii</h1>
-                posts.length > 0 ? (
+                ) : posts.length > 0 ? (
                   <PostCardInProfilePage post={posts[postIndex]} />
                 ) : (
-                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                  <div className='flex items-center justify-center flex-col mt-24 mb-24 mx-2'>
                     <img
                       src={emptyData}
                       alt='Empty Data!'
                       className='w-72 h-72'
                     />
-                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                    <p className='text-gray-400 text-xl sm:text-3xl'>
+                      No Data Found!
+                    </p>
                   </div>
                 )}
               </div>
@@ -390,17 +410,18 @@ const ProfilePageNew = () => {
                   <div className='w-full h-full flex justify-center items-center'>
                     <h1 className='text-2xl'>Loading...</h1>
                   </div>
-                ) : //<h1>hii</h1>
-                likedPosts.length > 0 ? (
+                ) : likedPosts.length > 0 ? (
                   <PostCardInProfilePage post={likedPosts[likedPostIndex]} />
                 ) : (
-                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                  <div className='flex items-center justify-center flex-col mt-24 mb-24 mx-2'>
                     <img
                       src={emptyData}
                       alt='Empty Data!'
                       className='w-72 h-72'
                     />
-                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                    <p className='text-gray-400 text-xl sm:text-3xl'>
+                      No Data Found!
+                    </p>
                   </div>
                 )}
               </div>
@@ -413,13 +434,15 @@ const ProfilePageNew = () => {
                 ) : reviews.length > 0 ? (
                   <Review review={reviews[reviewIndex]} />
                 ) : (
-                  <div className='flex items-center justify-center flex-col sm:flex-row mt-24 mb-24 mx-2'>
+                  <div className='flex items-center justify-center flex-col mt-24 mb-24 mx-2'>
                     <img
                       src={emptyData}
                       alt='Empty Data!'
                       className='w-72 h-72'
                     />
-                    <p className='text-gray-400 text-3xl'>No Data Found!</p>
+                    <p className='text-gray-400 text-xl sm:text-3xl '>
+                      No Data Found!
+                    </p>
                   </div>
                 )}
               </div>
@@ -500,8 +523,16 @@ const ProfilePageNew = () => {
       {isChangeProfilePicOpen && (
         <ChangeProfilePicDialog
           setIsChangeProfilePicOpen={setIsChangeProfilePicOpen}
-          profilePicture={profilePicture}
           setProfilePicture={setProfilePicture}
+        />
+      )}
+      {isReviewFormOpen && (
+        <ReviewForm
+          setIsReviewFormOpen={setIsReviewFormOpen}
+          currentUserID={currentUserID}
+          uid={uid}
+          setReviews={setReviews}
+          reviews={reviews}
         />
       )}
     </>

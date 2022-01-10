@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import data from "./data";
 import emptyData from "../assets/emptyData.svg";
 import { auth, db } from "../firebaseConfig";
+import { Loading } from "notiflix/build/notiflix-loading-aio";
 import {
   collection,
   getDocs,
@@ -12,23 +13,21 @@ import {
   doc,
   deleteDoc,
   documentId,
+  query,
+  where,
 } from "firebase/firestore";
 const Explore = () => {
   const [posts, setPosts] = useState({});
   const [search, setSearch] = useState("");
+  const [likedPosts, setLikedPosts] = useState([]);
   const [isPostsLoading, setIsPostsLoading] = useState(true);
-  const postsCollectionRef = collection(db, "Posts");
-  const fetchPosts = async () => {
-    setIsPostsLoading(true);
-    const data = await getDocs(postsCollectionRef);
-    setPosts(
-      data?.docs?.map((doc) => {
-        //console.log(doc.data().likes);
-        return { post: doc?.data(), postID: doc?.id };
-      })
-    );
-    setIsPostsLoading(false);
-  };
+  let currentUserID = auth?.currentUser ? auth?.currentUser?.uid : "guest";
+  const postsCollectionRef = query(
+    collection(db, "Posts"),
+    where("status", "==", "approaved"),
+    where("trashed", "==", false)
+  );
+
   const doSearch = (cards) => {
     return cards?.filter((card) => {
       if (search === "") return card;
@@ -38,9 +37,36 @@ const Explore = () => {
           ?.includes(search?.toLowerCase());
     });
   };
-
-  useEffect(() => {
-    fetchPosts();
+  useEffect(async () => {
+    setIsPostsLoading(true);
+    //check if the user logged in or not
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUserID = auth?.currentUser?.uid;
+      } else {
+        currentUserID = "guest";
+      }
+    });
+    //get the posts
+    const data = await getDocs(postsCollectionRef);
+    setPosts(
+      data?.docs?.map((doc) => {
+        return { post: doc?.data(), postID: doc?.id };
+      })
+    );
+    //get the user's liked posts IDs
+    let arrayOfLikedPostsID = [];
+    if (currentUserID !== "guest") {
+      await getDoc(doc(db, "Users", currentUserID))
+        .then((resp) => {
+          resp?.data()?.likedPostsID?.map((id) => {
+            arrayOfLikedPostsID?.push(id);
+          });
+        })
+        .catch((err) => console.log(err));
+      setLikedPosts(arrayOfLikedPostsID);
+    }
+    setIsPostsLoading(false);
     return () => {};
   }, []);
 
@@ -48,10 +74,11 @@ const Explore = () => {
     <>
       {isPostsLoading ? (
         <div className='w-full h-screen flex justify-center items-center'>
-          <h1 className='text-2xl'>Loading...</h1>
+          {Loading.circle()}
         </div>
       ) : (
         <div className=''>
+          {Loading.remove()}
           <div className='h-96  bg-explorePicture bg-cover bg-no-repeat bg-center w-full  flex flex-col  items-center relative'>
             <div className='bg-black bg-opacity-50 absolute top-0 left-0 right-0 h-full w-full'></div>
 
@@ -86,7 +113,13 @@ const Explore = () => {
           <div className='flex flex-wrap justify-center'>
             {doSearch(posts)?.length !== 0 ? (
               doSearch(posts)?.map((post, index) => (
-                <Post post={post} key={index} />
+                <Post
+                  post={post}
+                  key={index}
+                  currentUserID={currentUserID}
+                  likedPosts={likedPosts}
+                  setLikedPosts={setLikedPosts}
+                />
               ))
             ) : (
               <div className='flex  items-center justify-center flex-col mt-24 mb-24 mx-2'>

@@ -7,7 +7,6 @@ const PostCardInProfilePage = ({ post }) => {
     description: placeInfo,
     createdAt: date,
   } = post;
-  const [readMore, setReadMore] = useState(false);
   const history = useHistory();
   const handleFindTourGuides = () => {
     history.push(`/tour_guides/${placeName}`);
@@ -16,7 +15,7 @@ const PostCardInProfilePage = ({ post }) => {
     //console.log(post);
   });
   return (
-    <article className='bg-white rounded shadow-xl h-full mx-4 mt-2 flex flex-col'>
+    <article className='bg-white rounded shadow-xl h-full mx-4 mt-2 flex flex-col items-center xl:items-start'>
       <div className='flex flex-col items-center xl:flex-row xl:items-start mt-5'>
         <img
           className='m-2 w-60 h-56 sm:w-64 sm:h-60 lg:w-72 lg:h-64 md:mx-4 aspect-w-16 aspect-h-9 object-fill hover:transition duration-200 ease-in-out transform hover:scale-105'

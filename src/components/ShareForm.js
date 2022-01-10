@@ -11,9 +11,6 @@ import { shareFormValidation } from "./validations/shareFormValidation";
 const ShareForm = () => {
   /* using drop zone  */
   const [file, setfile] = useState([]);
-  const [imageUrl, setImageUrl] = useState("");
-  const [uid, setUid] = useState("");
-
   const onDrop = useCallback((acceptedfile) => {
     // Do something with the file
     console.log(acceptedfile);
@@ -38,6 +35,7 @@ const ShareForm = () => {
     console.log(values);
     /* get url for our image to make it public using firebase/storage */
     if (file.length) {
+      //setIsLoading(true);
       const storageRef = ref(storage, `images/${file[0].name}`);
       const uploadTask = uploadBytesResumable(storageRef, file[0]);
 
@@ -47,10 +45,26 @@ const ShareForm = () => {
         (error) => {
           console.log(error.message);
         },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref)
+        async () => {
+          await getDownloadURL(uploadTask.snapshot.ref)
             .then((url) => {
-              setImageUrl(url);
+              /* create a document for a new post  */
+              addDoc(collection(db, "Posts"), {
+                title: values.title,
+                description: values.description,
+                imageUrl: url,
+                createdAt: todaysDate,
+                likes: 0,
+                uid: auth.currentUser ? auth.currentUser.uid : "guest",
+                status: "under review",
+                trashed: false,
+              })
+                .then(() => {
+                  toast.success("Post is under review now ");
+                })
+                .catch((error) => {
+                  console.log(error.message);
+                });
             })
             .catch((error) => {
               console.log(error.message);
@@ -65,24 +79,6 @@ const ShareForm = () => {
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 
       console.log(todaysDate);
-      /* create a document for a new post  */
-
-      addDoc(collection(db, "Posts"), {
-        title: values.title,
-        description: values.description,
-        imageUrl: imageUrl,
-        createdAt: todaysDate,
-        likes: 0,
-        uid: auth.currentUser ? auth.currentUser.uid : "guest",
-        status: "under review",
-        //postID: documentId(),
-      })
-        .then(() => {
-          toast.success("Post is under review now ");
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
     } else {
       if (values.title || values.description) {
         toast.error("Please add image for your post");

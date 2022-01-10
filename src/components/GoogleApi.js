@@ -36,14 +36,14 @@ const GoogleApi = ({ action }) => {
           phoneNumber: "",
           address: "",
           dateOfBirth: "",
-          status: "",
+          status: "Available",
           businessEmail: "",
           isTourGuide: false,
           likedPostsID: [],
           postsID: [],
           reviewsID: [],
           cityToGuideIn: "",
-          isTourGuideAccepted: false,
+          isTourGuideAccepted: "",
         })
           .then((res) => {
             action === "login"

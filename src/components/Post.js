@@ -13,16 +13,15 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
-const Post = ({ post }) => {
+const Post = ({ post, currentUserID, likedPosts, setLikedPosts }) => {
   const { createdAt, description, imageUrl, likes, title, uid } = post?.post;
   const [isLiked, setIsLiked] = useState(false);
   const [likesCounter, setLikesCounter] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [fullName, setFullName] = useState("");
   const [profilePicture, setProfilePicture] = useState("");
-  const [likedPosts, setLikedPosts] = useState([]);
+
   const history = useHistory();
-  const currentUserID = auth?.currentUser ? auth?.currentUser?.uid : "guest";
 
   const handleLikeClick = async () => {
     setIsLiked(!isLiked);
@@ -88,21 +87,8 @@ const Post = ({ post }) => {
       })
       .catch((err) => console.log(err));
   };
-  const fetchCurrentUserLikedPostsID = async () => {
-    let arrayOfLikedPostsID = [];
-    if (currentUserID !== "guest") {
-      await getDoc(doc(db, "Users", currentUserID))
-        .then((resp) => {
-          resp?.data()?.likedPostsID?.map((id) => {
-            arrayOfLikedPostsID?.push(id);
-          });
-        })
-        .catch((err) => console.log(err));
-      setLikedPosts(arrayOfLikedPostsID);
-    }
-  };
   const checkTheLikedPostsToFlipTheHeartIcon = () => {
-    console.log(likedPosts);
+    //console.log(likedPosts);
     likedPosts?.map((id) => {
       if (post?.postID === id) {
         setIsLiked(!isLiked);
@@ -110,19 +96,15 @@ const Post = ({ post }) => {
     });
   };
   useEffect(() => {
+    console.log(currentUserID);
     setIsLoading(true);
     fetchUserInfo();
     setLikesCounter(parseInt(likes));
-    fetchCurrentUserLikedPostsID();
     checkTheLikedPostsToFlipTheHeartIcon();
     setIsLoading(false);
 
     return () => {};
   }, []);
-  useEffect(() => {
-    fetchCurrentUserLikedPostsID();
-    return () => {};
-  });
   return isLoading ? (
     <div className='w-full h-screen flex justify-center items-center'>
       <h1 className='text-2xl'>Loading...</h1>
