@@ -21,7 +21,8 @@ const TourGuideRequests = () => {
 		/*  getting posts data */
 		const docsRef = query(
 			collection(db, 'Users'),
-			where('isTourGuideAccepted', '==', 'waiting')
+			where('isTourGuideAccepted', '==', 'waiting'),
+			where('trashed', '==', false)
 		);
 		const tourGuides = await getDocs(docsRef);
 		let temp = new Array();
@@ -48,6 +49,7 @@ const TourGuideRequests = () => {
 				await updateDoc(doc(db, 'Users', postID), {
 					isTourGuide: true,
 					isTourGuideAccepted: 'approaved',
+					trashed: false,
 				});
 				toast.success('Post Approaved successfully');
 			},
@@ -60,13 +62,15 @@ const TourGuideRequests = () => {
 		let postID = ids[index];
 
 		Confirm.show(
-			'Reject as Tour Guide',
+			'Move To Trash',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
 				await updateDoc(doc(db, 'Users', postID), {
-					isTourGuideAccepted: 'rejected',
+					isTourGuideAccepted: 'waiting',
+					trashed: true,
+					isTourGuide: false,
 				});
 				toast.success('Tour Guide Rejected successfully');
 			},
@@ -99,7 +103,7 @@ const TourGuideRequests = () => {
 								</p>
 							</div>
 
-							<div className='xl:flex xl:flex-row mt-7 items-center  xl:justify-between  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
+							<div className='xl:flex xl:flex-row mt-7 items-center    flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
 								<button
 									onClick={() => {
 										approaveTourGuide(index);
@@ -123,7 +127,7 @@ const TourGuideRequests = () => {
 					<img src={noData} alt='' className='w-52 h-52' />
 
 					<h1 className='sm:text-md text-sm text-center'>
-						There is No Tour Guides to Remove
+						There is No Requests
 					</h1>
 				</div>
 			)}

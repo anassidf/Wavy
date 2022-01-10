@@ -7,6 +7,7 @@ import {
 	where,
 	query,
 	deleteDoc,
+	updateDoc,
 } from 'firebase/firestore';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
@@ -19,7 +20,8 @@ const RemovePosts = () => {
 		/*  getting posts data */
 		const docsRef = query(
 			collection(db, 'Posts'),
-			where('status', '==', 'approaved')
+			where('status', '==', 'approaved'),
+			where('trashed', '==', false)
 		);
 		const posts = await getDocs(docsRef);
 		let temp = new Array();
@@ -34,21 +36,23 @@ const RemovePosts = () => {
 		console.log(temp);
 	}, []);
 
-	/* delete post methode */
+	/* move post to trash methode */
 	const deletePost = async (index) => {
 		console.log(index);
 
 		let postID = ids[index];
 
-		/* delete post proccess */
 		Confirm.show(
-			'Delete Post',
+			'Move To Trash',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
-				await deleteDoc(doc(db, 'Posts', postID));
-				toast.success('Post deleted successfully');
+				await updateDoc(doc(db, 'Posts', postID), {
+					trashed: true,
+					status: 'under review',
+				});
+				toast.success('Moved to Trash successfully');
 			},
 			() => {},
 			{}
@@ -84,7 +88,7 @@ const RemovePosts = () => {
 										deletePost(index);
 									}}
 									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
-									Delete
+									Move to Trash
 								</button>
 							</div>
 						</div>

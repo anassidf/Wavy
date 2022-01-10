@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import RemoveTourGuides from './RemoveTourGuides';
 import TourGuideRequests from './TourGuideRequests';
-
+import TourGuidesTrash from './TourGuidesTrash';
 const TourGuides_admin = () => {
 	return (
 		<div className='min-h-screen  flex-1 bg-gray-200'>
@@ -21,6 +21,11 @@ const TourGuides_admin = () => {
 							Remove Tour Guide
 						</h1>
 					</Link>
+					<Link to='/admin/dashboard/tour_guides/trash'>
+						<h1 className='hover:text-gray-400 transition-all duration-300 ease-in-out text-xs lg:text-lg'>
+							Trash
+						</h1>
+					</Link>
 				</div>
 
 				{/* content */}
@@ -36,6 +41,11 @@ const TourGuides_admin = () => {
 							exact
 							path='/admin/dashboard/tour_guides/remove'
 							component={RemoveTourGuides}
+						/>
+						<Route
+							exact
+							path='/admin/dashboard/tour_guides/trash'
+							component={TourGuidesTrash}
 						/>
 					</div>
 				}

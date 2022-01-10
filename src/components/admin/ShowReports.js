@@ -13,20 +13,19 @@ import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
 import noData from '../../assets/noData.svg';
 
-const RemoveTourGuides = () => {
+const Reports = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
 	useEffect(async () => {
-		/*  getting tour guide data */
+		/*  getting posts data */
 		const docsRef = query(
-			collection(db, 'Users'),
-			where('isTourGuide', '==', true),
+			collection(db, 'Reports'),
 			where('trashed', '==', false)
 		);
-		const tourGuides = await getDocs(docsRef);
+		const posts = await getDocs(docsRef);
 		let temp = new Array();
 		let ids = new Array();
-		tourGuides.forEach((post) => {
+		posts.forEach((post) => {
 			temp.push(post.data());
 			ids.push(post.id);
 		});
@@ -36,21 +35,17 @@ const RemoveTourGuides = () => {
 		console.log(temp);
 	}, []);
 
-	const deleteTourGuide = (index) => {
+	const deleteReport = async (index) => {
 		let postID = ids[index];
-		console.log(postID);
 
-		/* delete post proccess */
 		Confirm.show(
 			'Move to Trash',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
-				await updateDoc(doc(db, 'Users', postID), {
+				await updateDoc(doc(db, 'Reports', postID), {
 					trashed: true,
-					isTourGuide: false,
-					isTourGuideAccepted: 'waiting',
 				});
 				toast.success('Moved to Trash successfully');
 			},
@@ -58,37 +53,31 @@ const RemoveTourGuides = () => {
 			{}
 		);
 	};
-
 	return (
-		<div className=' flex justify-center flex-wrap '>
+		<div className=' bg-gray-200 flex justify-center items-center flex-wrap '>
 			{data.length ? (
 				data?.map((post, index) => (
-					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-green-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
-						{/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
-						<img
-							className='h-52 xl:h-72 w-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '
-							src={post?.photo}
-							alt=''
-						/>
-						{/* 	</div> */}
-
+					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-pink-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
 						<div className='mt-16 xl:ml-5 xl:w-text_width   flex justify-center flex-col break-words xl:break-words text-white '>
 							<div className='h-52 xl:h-32 '>
-								<p className='font-bold text-xl mb-5 '>{post?.name}</p>
-								<p className='text-xs mb-1'>Born in: {post?.dateOfBirth}</p>
-								<p className='text-xs mb-1'>Address: {post?.address}</p>
+								<p className='text-xs  xl:text-lg mb-2 '>
+									Reporter ID: {post.reporterId}
+								</p>
+								<p className='text-xs xl:text-lg mb-5 '>
+									Report On ID: {post.reportOnId}
+								</p>
 
-								<p className='xl:mr-5 xl:ml-0 text-xs ml-5 mr-5  '>
-									{post?.description}
+								<p className='xl:mr-5 xl:ml-0  ml-5 mr-5  text-xs xl:text-base '>
+									{post.report}
 								</p>
 							</div>
 
 							<div className='xl:flex xl:flex-row mt-7 items-center  xl:justify-between  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
 								<button
 									onClick={() => {
-										deleteTourGuide(index);
+										deleteReport(index);
 									}}
-									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+									className=' text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
 									Move to Trash
 								</button>
 							</div>
@@ -100,7 +89,7 @@ const RemoveTourGuides = () => {
 					<img src={noData} alt='' className='w-52 h-52' />
 
 					<h1 className='sm:text-md text-sm text-center'>
-						There is No Tour Guides to Remove
+						There is No Reports
 					</h1>
 				</div>
 			)}
@@ -109,4 +98,4 @@ const RemoveTourGuides = () => {
 	);
 };
 
-export default RemoveTourGuides;
+export default Reports;

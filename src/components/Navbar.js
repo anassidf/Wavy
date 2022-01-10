@@ -60,7 +60,15 @@ const Navbar = () => {
 				'http://localhost:3000/admin/dashboard/recommendations' ||
 			window.location.href ==
 				'http://localhost:3000/admin/dashboard/tour_guides' ||
-			window.location.href == 'http://localhost:3000/admin/dashboard/reports'
+			window.location.href == 'http://localhost:3000/admin/dashboard/reports' ||
+			window.location.href ==
+				'http://localhost:3000/admin/dashboard/posts/trash' ||
+			window.location.href ==
+				'http://localhost:3000/admin/dashboard/tour_guides/trash' ||
+			window.location.href ==
+				'http://localhost:3000/admin/dashboard/reports/show_reports' ||
+			window.location.href ==
+				'http://localhost:3000/admin/dashboard/reports/trash'
 		) {
 			document.getElementById('navbar').style.backgroundColor = '#D1D5DB';
 		} else return;
@@ -194,6 +202,25 @@ const Navbar = () => {
 											</svg>
 										</Menu.Item>
 									</Link>
+									<Link to='/recommendations'>
+										<Menu.Item
+											className=' hover:bg-gray-300  text-gray-800 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+											as='div'>
+											<h1>Recommendations</h1>
+											<svg
+												xmlns='http://www.w3.org/2000/svg'
+												className='h-5 w-5'
+												viewBox='0 0 20 20'
+												fill='currentColor'>
+												<path
+													fillRule='evenodd'
+													d='M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z'
+													clipRule='evenodd'
+												/>
+												<path d='M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z' />
+											</svg>
+										</Menu.Item>
+									</Link>
 								</Menu.Items>
 							</Transition>
 						</Menu>
@@ -296,7 +323,7 @@ const Navbar = () => {
 								leaveTo='transform opacity-0 scale-95'>
 								<Menu.Items
 									as='data'
-									className='absolute  text-gray-800 w-32 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-xs'>
+									className='absolute  text-gray-800 w-52 mt-2 -left-10 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-xs'>
 									<Link
 										to={
 											authenticated
@@ -357,6 +384,25 @@ const Navbar = () => {
 													d='M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z'
 													clipRule='evenodd'
 												/>
+											</svg>
+										</Menu.Item>
+									</Link>
+									<Link to='/recommendations'>
+										<Menu.Item
+											className=' hover:bg-gray-300  text-gray-800 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+											as='div'>
+											<h1>Recommendations</h1>
+											<svg
+												xmlns='http://www.w3.org/2000/svg'
+												className='h-5 w-5'
+												viewBox='0 0 20 20'
+												fill='currentColor'>
+												<path
+													fillRule='evenodd'
+													d='M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z'
+													clipRule='evenodd'
+												/>
+												<path d='M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z' />
 											</svg>
 										</Menu.Item>
 									</Link>
