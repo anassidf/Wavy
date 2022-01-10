@@ -12,15 +12,19 @@ import {
 	addDoc,
 } from 'firebase/firestore';
 import noData from '../assets/noData.svg';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
+import { useSelector } from 'react-redux';
 
 const TourGuides = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
 	const [city, setCity] = useState('');
 
+	const showState = useSelector((state) => {
+		return state.showUser.showUser;
+	});
 	const history = useHistory();
 	const params = useParams();
 
@@ -34,7 +38,8 @@ const TourGuides = () => {
 		/*  getting posts data */
 		const docsRef = query(
 			collection(db, 'Users'),
-			where('isTourGuide', '==', true)
+			where('isTourGuide', '==', true),
+			where('isTourGuideAccepted', '==', 'approaved')
 		);
 		const posts = await getDocs(docsRef);
 		let temp = new Array();
@@ -61,7 +66,7 @@ const TourGuides = () => {
 
 		const getter = await getDoc(doc(db, 'Users', reservedTourGuide));
 		const tourGuide = getter.data();
-		if (auth.currentUser) {
+		if (auth.currentUser && showState) {
 			/* dialog box has contact info */
 			Report.info(
 				`${tourGuide.name} Contact Info`,
@@ -88,7 +93,7 @@ const TourGuides = () => {
 	const report = (index) => {
 		let reportOnId = ids[index];
 
-		if (auth.currentUser) {
+		if (auth.currentUser && showState) {
 			Confirm.prompt(
 				'Report',
 				'Type Your Report',
@@ -167,13 +172,20 @@ const TourGuides = () => {
 						console.log(tourGuide),
 						(
 							<div className='lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-60 bg-yellow-600 mt-10 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
-								<div className='lg:w-80 w-full lg:h-72 h-52 '>
-									<img
-										className=' h-full  lg:w-62 w-full lg:rounded-tl-md lg:rounded-bl-md rounded-tr-md rounded-tl-md lg:rounded-tr-none'
-										src={tourGuide?.photo}
-										alt=''
-									/>
-								</div>
+								<Link
+									to={
+										auth.currentUser && showState
+											? `/profile-page/${tourGuide.uid}`
+											: '/login'
+									}>
+									<div className='lg:w-80 w-full lg:h-72 h-52 '>
+										<img
+											className=' h-full  lg:w-62 w-full lg:rounded-tl-md lg:rounded-bl-md rounded-tr-md rounded-tl-md lg:rounded-tr-none'
+											src={tourGuide?.photo}
+											alt=''
+										/>
+									</div>
+								</Link>
 
 								<div className='mt-16 lg:ml-5 lg:w-tour_guide_cards_text1 w-tour_guide_cards_text2 text-white flex justify-center flex-col break-words'>
 									<p className='font-bold text-lg mb-5'>{tourGuide?.name}</p>

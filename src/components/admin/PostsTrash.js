@@ -1,4 +1,3 @@
-import React from 'react';
 import { useEffect, useState } from 'react';
 import { db, auth } from '../../firebaseConfig';
 import {
@@ -7,19 +6,22 @@ import {
 	getDocs,
 	where,
 	query,
+	deleteDoc,
 	updateDoc,
 } from 'firebase/firestore';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
 import noData from '../../assets/noData.svg';
-const WaitingPosts = () => {
+
+const PostsTrash = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
 	useEffect(async () => {
 		/*  getting posts data */
 		const docsRef = query(
 			collection(db, 'Posts'),
-			where('status', '==', 'under review')
+			where('status', '==', 'under review'),
+			where('trashed', '==', true)
 		);
 		const posts = await getDocs(docsRef);
 		let temp = new Array();
@@ -34,40 +36,39 @@ const WaitingPosts = () => {
 		console.log(temp);
 	}, []);
 
-	const approavePost = (index) => {
+	/* move post to trash methode */
+	const deletePost = async (index) => {
+		console.log(index);
+
 		let postID = ids[index];
 
+		/* delete post proccess */
 		Confirm.show(
-			'Approave Post',
+			'Delete Post Permanently',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
-				await updateDoc(doc(db, 'Posts', postID), {
-					status: 'approaved',
-					trashed: false,
-				});
-				toast.success('Post Approaved successfully');
+				await deleteDoc(doc(db, 'Posts', postID));
+				toast.success('Post deleted successfully');
 			},
 			() => {},
 			{}
 		);
 	};
-
-	const rejectPost = (index) => {
+	const retrievePost = (index) => {
 		let postID = ids[index];
-
 		Confirm.show(
-			'Move To Trash',
+			'Retrieve Post ',
 			'Are you sure?',
 			'Yes',
 			'No',
 			async () => {
 				await updateDoc(doc(db, 'Posts', postID), {
-					trashed: true,
+					trashed: false,
 					status: 'under review',
 				});
-				toast.success('Moved to Trash successfully');
+				toast.success('Post Retrieved successfully');
 			},
 			() => {},
 			{}
@@ -75,13 +76,13 @@ const WaitingPosts = () => {
 	};
 
 	return (
-		<div className=' flex justify-center flex-wrap '>
+		<div className=' flex justify-center items-center flex-wrap '>
 			{data.length ? (
 				data?.map((post, index) => (
-					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-yellow-600  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
+					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-green-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
 						{/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
 						<img
-							className='h-52 xl:h-72 w-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '
+							className='h-52 w-72 xl:h-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '
 							src={post.imageUrl}
 							alt=''
 						/>
@@ -97,20 +98,20 @@ const WaitingPosts = () => {
 								</p>
 							</div>
 
-							<div className='xl:flex xl:flex-row mt-7 items-center    flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
+							<div className='xl:flex xl:flex-row mt-7 items-center  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
 								<button
 									onClick={() => {
-										approavePost(index);
+										retrievePost(index);
 									}}
-									className='text-xs bg-green-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 hover:shadow-md transform hover:scale-110 transition-all duration-300 ease-in-out'>
-									Approave
+									className='text-xs bg-green-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+									Retrieve
 								</button>
 								<button
 									onClick={() => {
-										rejectPost(index);
+										deletePost(index);
 									}}
-									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 hover:shadow-md transform hover:scale-110 transition-all duration-300 ease-in-out'>
-									Reject
+									className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+									Delete
 								</button>
 							</div>
 						</div>
@@ -121,7 +122,7 @@ const WaitingPosts = () => {
 					<img src={noData} alt='' className='w-52 h-52' />
 
 					<h1 className='sm:text-md text-sm text-center'>
-						There is No Waiting Posts
+						There is No Trashed Posts
 					</h1>
 				</div>
 			)}
@@ -130,4 +131,4 @@ const WaitingPosts = () => {
 	);
 };
 
-export default WaitingPosts;
+export default PostsTrash;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import RemovePosts from './RemovePosts';
+import Trash from './PostsTrash';
 import WaitingPosts from './WaitingPosts';
 
 const Posts = () => {
@@ -20,6 +21,11 @@ const Posts = () => {
 							Remove Posts
 						</h1>
 					</Link>
+					<Link to='/admin/dashboard/posts/trash'>
+						<h1 className='hover:text-gray-400 transition-all duration-300 ease-in-out text-xs lg:text-lg'>
+							Trash
+						</h1>
+					</Link>
 				</div>
 
 				{/* content */}
@@ -35,6 +41,7 @@ const Posts = () => {
 						path='/admin/dashboard/posts/waiting'
 						component={WaitingPosts}
 					/>
+					<Route exact path='/admin/dashboard/posts/trash' component={Trash} />
 				</div>
 			</div>
 		</div>

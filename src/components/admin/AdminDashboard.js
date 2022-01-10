@@ -19,15 +19,19 @@ const AdminDashboard = () => {
 			'Block',
 			'Cancel',
 			async (userID) => {
-				await updateDoc(doc(db, 'Users', userID), {
-					blocked: true,
-				})
-					.then(() => {
-						toast.success('User Blocked Successfully');
+				if (userID) {
+					await updateDoc(doc(db, 'Users', userID), {
+						blocked: true,
 					})
-					.catch(() => {
-						toast.error('Invalid User ID');
-					});
+						.then(() => {
+							toast.success('User Blocked Successfully');
+						})
+						.catch(() => {
+							toast.error('Invalid User ID');
+						});
+				} else {
+					toast.error('you Did Not Enter User ID');
+				}
 			},
 			() => {},
 			{}
@@ -137,7 +141,7 @@ const AdminDashboard = () => {
 						path='/admin/dashboard/recommendations'
 						component={Recommendations_admin}
 					/>
-					<Route exact path='/admin/dashboard/reports' component={Reports} />
+					<Route path='/admin/dashboard/reports' component={Reports} />
 				</Switch>
 			</div>
 			<Toaster position='top-center' />

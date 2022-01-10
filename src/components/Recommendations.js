@@ -4,6 +4,9 @@ import petra from '../assets/signUp.jpg';
 import ReactPlayer from 'react-player';
 import { db } from '../firebaseConfig';
 import { getDocs, query, collection } from 'firebase/firestore';
+import AwesomeSlider from 'react-awesome-slider';
+import 'react-awesome-slider/dist/custom-animations/fall-animation.css';
+import 'react-awesome-slider/dist/styles.css';
 function Recommendations() {
 	const [recommendations, setRecommendations] = useState([]);
 
@@ -19,59 +22,45 @@ function Recommendations() {
 			dataTemp.push(item.data());
 		});
 		setRecommendations(dataTemp);
+		console.log(dataTemp);
 	}, []);
 	return (
-		<ReactFullpage
-			//fullpage options
-			navigation
-			scrollHorizontallyKey={'YOUR KEY HERE'}
-			licenseKey={'YOUR_KEY_HERE'}
-			scrollingSpeed={1000} /* Options here */
-			render={({ state, fullpageApi }) => {
-				return (
-					<ReactFullpage.Wrapper>
-						<div className='section relative'>
-							<img
-								src={petra}
-								alt=''
-								className='w-full h-full filter blur-sm'
+		<AwesomeSlider
+			animation='fallAnimation'
+			bullets={false}
+			style={{ height: '100vh' }}>
+			{recommendations.map((item, index) => (
+				<div
+					className='h-screen w-screen'
+					style={{ height: '100vh' }}
+					key={index}>
+					<img
+						src={item.imageUrl}
+						alt=''
+						className='w-screen h-screen filter blur-sm'
+					/>
+					<div className='bg-black bg-opacity-60 lg:h-72 h-full absolute lg:bottom-52 lg:top-auto  top-0 left-0 right-0   w-full flex lg:flex-row flex-col lg:justify-between  items-center justify-center'>
+						{/* title */}
+						{/* description */}
+
+						<div className='text-white lg:ml-32  space-y-4 lg:text-left text-center'>
+							<h1 className=' text-2xl font-bold'>{item.title}</h1>
+							<p className=' lg:w-registeration w-full '>{item.description}</p>
+						</div>
+
+						{/* video */}
+						<div className='text-white lg:mr-32 lg:mt-0 mr-0 mt-20 '>
+							<ReactPlayer
+								url={item.youtubeLink}
+								width='265px'
+								height='150px'
+								controls={true}
 							/>
-							<div className='bg-black bg-opacity-60 lg:h-72 h-full absolute lg:bottom-52 lg:top-auto  top-0 left-0 right-0   w-full flex   xl:justify-between justify-center items-center'>
-								{/* title */}
-								{/* description */}
-
-								<div className='text-white ml-10 space-y-4 lg:text-left text-center'>
-									<h1 className=' text-2xl font-bold'>Petra</h1>
-									<p className=' lg:w-registeration w-full '>
-										Petra is a famous archaeological site in Jordan's
-										southwestern desert. Dating to around 300 B.C., it was the
-										capital of the Nabatean Kingdom. Accessed via a narrow
-										canyon called Al Siq, it contains tombs and temples carved
-										into pink sandstone cliffs, earning its nickname, the "Rose
-										City." Perhaps its most famous structure is 45m-high Al
-										Khazneh, a temple with an ornate, Greek-style facade, and
-										known as The Treasury
-									</p>
-								</div>
-
-								{/* video */}
-								<div className='text-white mr-10  lg:inline hidden'>
-									<ReactPlayer
-										url='https://www.youtube.com/watch?v=ezDiSkOU0wc'
-										width='355px'
-										height='200px'
-										controls={true}
-									/>
-								</div>
-							</div>
 						</div>
-						<div className='section'>
-							<p>Section 2</p>
-						</div>
-					</ReactFullpage.Wrapper>
-				);
-			}}
-		/>
+					</div>
+				</div>
+			))}
+		</AwesomeSlider>
 	);
 }
 
