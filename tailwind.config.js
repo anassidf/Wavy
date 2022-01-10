@@ -13,6 +13,8 @@ module.exports = {
         additional_user_data2: "80%",
         tour_guide_card: "60%",
         text_width: "500px",
+        tour_guide_cards_text1: "710px",
+
         carousel_image: "100rem",
         larg: "30%",
       },
@@ -35,6 +37,7 @@ module.exports = {
         recommendations_card: 'url("/src/assets/recommendationsCard.png")',
         admin_Image: 'url("/src/assets/adminBackground.jpg")',
         add_recommendations: 'url("/src/assets/addRecommendations.jpg")',
+        find_tour_guide: 'url("/src/assets/findTourGuide.jpg")',
         explorePicture: 'url("/src/assets/explorePicture.jpg")',
       },
     },

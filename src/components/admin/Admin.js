@@ -24,7 +24,7 @@ const Admin = () => {
 	};
 
 	return (
-		<div className='h-screen flex justify-center items-center'>
+		<div className='h-screen flex justify-center items-center '>
 			<div className='bg-admin_Image bg-center bg-cover  h-screen absolute top-0 right-0 left-0 filter blur-sm'></div>
 
 			<Formik
@@ -34,7 +34,7 @@ const Admin = () => {
 				}}
 				validationSchema={adminValidation}
 				onSubmit={handleAdminData}>
-				<div className='z-10 bg-blue-200 flex  justify-center items-center h-super_larg_height2 w-additional_user_data2 lg:w-additional_user_data1   rounded-lg shadow-lg bg-opacity-80 relative '>
+				<div className='z-10 bg-blue-200 mt-10 flex  justify-center items-center h-super_larg_height2 w-additional_user_data2 lg:w-additional_user_data1   rounded-lg shadow-lg bg-opacity-80 relative '>
 					<Form className='flex flex-col items-center'>
 						<h1 className='text-3xl font-bold mb-14'>Welcome Boss</h1>
 						<div className='relative text-center sm:text-left'>
