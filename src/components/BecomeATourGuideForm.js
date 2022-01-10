@@ -50,7 +50,6 @@ const BecomeATourGuideForm = (props) => {
             <Form className='flex flex-col items-center'>
               <div className='flex flex-col'>
                 <Field
-                  name='City'
                   as='select'
                   name='city'
                   className='mx-2 my-3 w-full sm:w-64 h-8  border-b-2 border-gray-500'

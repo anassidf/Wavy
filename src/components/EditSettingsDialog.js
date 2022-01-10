@@ -3,7 +3,10 @@ import { ImCancelCircle } from "react-icons/im";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { auth, db } from "../firebaseConfig";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
-import { editFormValidations } from "./validations/editSettingsFormValidations";
+import {
+  editFormTourGuideValidations,
+  editFormNormalUserValidations,
+} from "./validations/editSettingsFormValidations";
 import { BiUser } from "react-icons/bi";
 import { useEffect } from "react";
 const EditSettingsDialog = (props) => {
@@ -31,7 +34,7 @@ const EditSettingsDialog = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [userDoc, setUserDoc] = useState({});
 
-  const initialValues = {
+  const initialValuesTourGuide = {
     fullName: `${fullName}`,
     dateOfBirth: `${dateOfBirth}`,
     address: `${address}`,
@@ -40,6 +43,14 @@ const EditSettingsDialog = (props) => {
     phoneNumber: `${phoneNumber}`,
     businessEmail: `${businessEmail}`,
     cityToGuideIn: `${cityToGuideIn}`,
+  };
+  const initialValuesNormalUser = {
+    fullName: `${fullName}`,
+    dateOfBirth: `${dateOfBirth}`,
+    address: `${address}`,
+    description: `${info}`,
+    phoneNumber: `${phoneNumber}`,
+    businessEmail: `${businessEmail}`,
   };
   const handleSubmit = async (values) => {
     const {
@@ -55,17 +66,25 @@ const EditSettingsDialog = (props) => {
 
     setIsLoading(true);
 
-    await updateDoc(userDoc, {
-      businessEmail: businessEmail,
-      address: address,
-      description: description,
-      dateOfBirth: dateOfBirth,
-      fullName: fullName,
-      phoneNumber: phoneNumber,
-      status: status,
-      cityToGuideIn: cityToGuideIn,
-    });
-
+    isTourGuide
+      ? await updateDoc(userDoc, {
+          businessEmail: businessEmail,
+          address: address,
+          description: description,
+          dateOfBirth: dateOfBirth,
+          fullName: fullName,
+          phoneNumber: phoneNumber,
+          status: status,
+          cityToGuideIn: cityToGuideIn,
+        })
+      : await updateDoc(userDoc, {
+          businessEmail: businessEmail,
+          address: address,
+          description: description,
+          dateOfBirth: dateOfBirth,
+          fullName: fullName,
+          phoneNumber: phoneNumber,
+        });
     setFullName(fullName);
     setBusinessEmail(businessEmail);
     setPhoneNumber(phoneNumber);
@@ -99,8 +118,14 @@ const EditSettingsDialog = (props) => {
             />
           </div>
           <Formik
-            initialValues={initialValues}
-            validationSchema={editFormValidations}
+            initialValues={
+              isTourGuide ? initialValuesTourGuide : initialValuesNormalUser
+            }
+            validationSchema={
+              isTourGuide
+                ? editFormTourGuideValidations
+                : editFormNormalUserValidations
+            }
             onSubmit={handleSubmit}
           >
             <Form className='flex flex-col items-center'>
@@ -131,32 +156,37 @@ const EditSettingsDialog = (props) => {
                       name='businessEmail'
                       className='text-red-500 text-xs text-left mx-4'
                     />
-                    <Field
-                      as='select'
-                      name='cityToGuideIn'
-                      className='mx-2 my-3 h-8 border-b-2 border-gray-500 outline-none'
-                    >
-                      <option value='' defaultValue>
-                        City To Guide In
-                      </option>
-                      <option value='Irbid'>Irbid</option>
-                      <option value='Jerash'>Jerash</option>
-                      <option value='Ajloun'>Ajloun</option>
-                      <option value='Amman'>Amman</option>
-                      <option value='Zarqa'>Zarqa</option>
-                      <option value='Kerak'>Kerak</option>
-                      <option value='Al-Tafelah'>Al-Tafelah</option>
-                      <option value="Ma'an">Ma'an</option>
-                      <option value='Aqaba'>Aqaba</option>
-                      <option value='Al-Mafraq'>Al-Mafraq</option>
-                      <option value='Madaba'>Madaba</option>
-                      <option value='Balqa '>Balqa </option>
-                    </Field>
-                    <ErrorMessage
-                      component='div'
-                      name='cityToGuideIn'
-                      className='text-red-500 text-xs text-left mx-4'
-                    />
+                    {isTourGuide && (
+                      <>
+                        <Field
+                          as='select'
+                          name='cityToGuideIn'
+                          className='mx-2 my-3 h-8 border-b-2 border-gray-500 outline-none'
+                        >
+                          <option value='' defaultValue>
+                            City To Guide In
+                          </option>
+                          <option value='Irbid'>Irbid</option>
+                          <option value='Jerash'>Jerash</option>
+                          <option value='Ajloun'>Ajloun</option>
+                          <option value='Amman'>Amman</option>
+                          <option value='Zarqa'>Zarqa</option>
+                          <option value='Kerak'>Kerak</option>
+                          <option value='Al-Tafelah'>Al-Tafelah</option>
+                          <option value="Ma'an">Ma'an</option>
+                          <option value='Aqaba'>Aqaba</option>
+                          <option value='Al-Mafraq'>Al-Mafraq</option>
+                          <option value='Madaba'>Madaba</option>
+                          <option value='Balqa '>Balqa </option>
+                        </Field>
+                        <ErrorMessage
+                          component='div'
+                          name='cityToGuideIn'
+                          className='text-red-500 text-xs text-left mx-4'
+                        />
+                      </>
+                    )}
+
                     <Field
                       placeholder='Date of Birth'
                       name='dateOfBirth'
