@@ -16,7 +16,6 @@ import EditSettingsDialog from "./EditSettingsDialog";
 import BecomeATourGuideForm from "./BecomeATourGuideForm";
 import ChangeProfilePicDialog from "./ChangeProfilePicDialog";
 import { auth, db } from "../firebaseConfig";
-import data from "./data";
 import {
   collection,
   getDocs,
