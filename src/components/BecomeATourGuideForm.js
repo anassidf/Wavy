@@ -17,7 +17,8 @@ const BecomeATourGuideForm = (props) => {
   const handleSubmit = async (values) => {
     await updateDoc(userDoc, {
       cityToGuideIn: values.city,
-      isTourGuide: true,
+      isTourGuideAccepted: "waiting",
+      trashed: false,
     });
     setCityToGuideIn(values.city);
     setIsTourGuide(true);

@@ -35,7 +35,6 @@ const ReviewForm = (props) => {
       reviewsID = reviewDocs.map((doc) => {
         return doc.id;
       });
-      console.log(reviewDocs);
     });
     await updateDoc(doc(db, "Users", uid), {
       reviewsID: reviewsID,

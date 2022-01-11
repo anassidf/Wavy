@@ -16,7 +16,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import { Report } from 'notiflix/build/notiflix-report-aio';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { useSelector } from 'react-redux';
-
+import Bounce from 'react-reveal/Bounce';
 const TourGuides = () => {
 	const [data, setData] = useState([]);
 	const [ids, setIds] = useState([]);
@@ -171,83 +171,90 @@ const TourGuides = () => {
 					(tourGuide, index) => (
 						console.log(tourGuide),
 						(
-							<div className='lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-60 bg-yellow-600 mt-10 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
-								<Link
-									to={
-										auth.currentUser && showState
-											? `/profile-page/${tourGuide.uid}`
-											: '/login'
-									}>
-									<div className='lg:w-80 w-full lg:h-72 h-52 '>
-										<img
-											className=' h-full  lg:w-62 w-full lg:rounded-tl-md lg:rounded-bl-md rounded-tr-md rounded-tl-md lg:rounded-tr-none'
-											src={tourGuide?.photo}
-											alt=''
-										/>
-									</div>
-								</Link>
-
-								<div className='mt-16 lg:ml-5 lg:w-tour_guide_cards_text1 w-tour_guide_cards_text2 text-white flex justify-center flex-col break-words'>
-									<p className='font-bold text-lg mb-5'>{tourGuide?.name}</p>
-									<p className='text-xs mb-1'>Born: {tourGuide?.dateOfBirth}</p>
-									<p className='text-xs mb-3'> Address: {tourGuide?.address}</p>
-									<p className='lg:mr-5 lg:ml-0 text-xs ml-5 mr-5 '>
-										{tourGuide?.description}
-									</p>
-
-									{/* small squars */}
-									<div className='lg:flex lg:flex-row mt-7 items-center  lg:justify-between  flex flex-col lg:ml-0 lg:mr-0 ml-1 mr-1 '>
-										<div className='flex mb-3 items-center flex-wrap justify-center gap-1'>
-											<section className='flex  items-center space-x-1 text-xs  px-7 py-0.5 bg-black bg-opacity-60 rounded-sm'>
-												<svg
-													xmlns='http://www.w3.org/2000/svg'
-													className='h-4 w-4 animate-pulse'
-													fill='none'
-													viewBox='0 0 24 24'
-													stroke='currentColor'>
-													<path
-														stroke-linecap='round'
-														stroke-linejoin='round'
-														stroke-width='2'
-														d='M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z'
-													/>
-												</svg>
-												<span>{tourGuide?.cityToGuideIn}</span>
-											</section>
-											<section className='flex  items-center space-x-1 text-xs  px-7 py-0.5 bg-black bg-opacity-60 rounded-sm'>
-												<svg
-													xmlns='http://www.w3.org/2000/svg'
-													className='h-4 w-4 animate-spin'
-													viewBox='0 0 20 20'
-													fill='currentColor'>
-													<path
-														fillRule='evenodd'
-														d='M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z'
-														clipRule='evenodd'
-													/>
-												</svg>
-												<span>{tourGuide?.status}</span>
-											</section>
+							<Bounce bottom>
+								<div className='lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-60 bg-blue-500 mt-10 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
+									<Link
+										to={
+											auth.currentUser && showState
+												? `/profile-page/${tourGuide.uid}`
+												: '/login'
+										}>
+										<div className='lg:w-80 w-full lg:h-72 h-52 '>
+											<img
+												className=' h-full  lg:w-62 w-full lg:rounded-tl-md lg:rounded-bl-md rounded-tr-md rounded-tl-md lg:rounded-tr-none'
+												src={tourGuide?.photo}
+												alt=''
+											/>
 										</div>
-										<div className='flex flex-col lg:flex lg:flex-row'>
-											<button
-												onClick={() => {
-													report(index);
-												}}
-												className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 lg:mr-5 mb-1 shadow-md transform hover:scale-110 transition-all duration-300'>
-												Report
-											</button>
-											<button
-												onClick={() => {
-													reserve(index);
-												}}
-												className='text-xs bg-purple-800  rounded-sm px-7 py-0.5 h-5 lg:mr-5 mb-5 shadow-md transform hover:scale-110 transition-all duration-300'>
-												Contact
-											</button>
+									</Link>
+
+									<div className='mt-16 lg:ml-5 lg:w-tour_guide_cards_text1 w-tour_guide_cards_text2 text-white flex justify-center flex-col break-words'>
+										<p className='font-bold text-lg mb-5'>{tourGuide?.name}</p>
+										<p className='text-xs mb-1'>
+											Born: {tourGuide?.dateOfBirth}
+										</p>
+										<p className='text-xs mb-3'>
+											{' '}
+											Address: {tourGuide?.address}
+										</p>
+										<p className='lg:mr-5 lg:ml-0 text-xs ml-5 mr-5 '>
+											{tourGuide?.description}
+										</p>
+
+										{/* small squars */}
+										<div className='lg:flex lg:flex-row mt-7 items-center  lg:justify-between  flex flex-col lg:ml-0 lg:mr-0 ml-1 mr-1 '>
+											<div className='flex mb-3 items-center flex-wrap justify-center gap-1'>
+												<section className='flex  items-center space-x-1 text-xs  px-7 py-0.5 bg-black bg-opacity-60 rounded-sm'>
+													<svg
+														xmlns='http://www.w3.org/2000/svg'
+														className='h-4 w-4 animate-pulse'
+														fill='none'
+														viewBox='0 0 24 24'
+														stroke='currentColor'>
+														<path
+															stroke-linecap='round'
+															stroke-linejoin='round'
+															stroke-width='2'
+															d='M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z'
+														/>
+													</svg>
+													<span>{tourGuide?.cityToGuideIn}</span>
+												</section>
+												<section className='flex  items-center space-x-1 text-xs  px-7 py-0.5 bg-black bg-opacity-60 rounded-sm'>
+													<svg
+														xmlns='http://www.w3.org/2000/svg'
+														className='h-4 w-4 animate-spin'
+														viewBox='0 0 20 20'
+														fill='currentColor'>
+														<path
+															fillRule='evenodd'
+															d='M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z'
+															clipRule='evenodd'
+														/>
+													</svg>
+													<span>{tourGuide?.status}</span>
+												</section>
+											</div>
+											<div className='flex flex-col lg:flex lg:flex-row'>
+												<button
+													onClick={() => {
+														report(index);
+													}}
+													className='text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 lg:mr-5 mb-1 shadow-md transform hover:scale-110 transition-all duration-300'>
+													Report
+												</button>
+												<button
+													onClick={() => {
+														reserve(index);
+													}}
+													className='text-xs bg-purple-800  rounded-sm px-7 py-0.5 h-5 lg:mr-5 mb-5 shadow-md transform hover:scale-110 transition-all duration-300'>
+													Contact
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
+							</Bounce>
 						)
 					)
 				)

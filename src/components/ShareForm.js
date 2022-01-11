@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { db, auth, storage } from "../firebaseConfig";
+import Fade from "react-reveal/Fade";
 import {
   addDoc,
   collection,
@@ -123,63 +124,65 @@ const ShareForm = () => {
         validationSchema={shareFormValidation}
         onSubmit={handleShareForm}
       >
-        <div className='z-10 bg-blue-200 flex  justify-center items-center h-super_larg_height2 w-additional_user_data2 lg:w-additional_user_data1   rounded-lg shadow-lg bg-opacity-80 relative '>
-          <Form className='flex flex-col items-center'>
-            {/* image drop zone box */}
-            <div
-              {...getRootProps()}
-              className='cursor-pointer flex justify-center items-center border-2 border-dotted border-gray-500 mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm h-28 '
-            >
-              <input {...getInputProps()} />
-              {isDragActive ? (
-                <p className='text-sm text-center animate-pulse text-green-400'>
-                  Drop the Image here ...
-                </p>
-              ) : (
-                <p className='text-xs text-center text-blue-500'>
-                  Drag and drop any Image here, or click to select Image
-                </p>
-              )}
-              <aside>{thumbs}</aside>
-            </div>
+        <Fade>
+          <div className='z-10 bg-blue-200 flex  justify-center items-center h-super_larg_height2 w-additional_user_data2 lg:w-additional_user_data1   rounded-lg shadow-lg bg-opacity-80 relative '>
+            <Form className='flex flex-col items-center'>
+              {/* image drop zone box */}
+              <div
+                {...getRootProps()}
+                className='cursor-pointer flex justify-center items-center border-2 border-dotted border-gray-500 mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm h-28 '
+              >
+                <input {...getInputProps()} />
+                {isDragActive ? (
+                  <p className='text-sm text-center animate-pulse text-green-400'>
+                    Drop the Image here ...
+                  </p>
+                ) : (
+                  <p className='text-xs text-center text-blue-500'>
+                    Drag and drop any Image here, or click to select Image
+                  </p>
+                )}
+                <aside>{thumbs}</aside>
+              </div>
 
-            <div className='relative text-center sm:text-left'>
-              <Field
-                id='field1'
-                autoComplete='off'
-                name='title'
-                placeholder='Title'
-                type='text'
-                className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
-              />
-              <ErrorMessage
-                component='div'
-                name='title'
-                className='text-red-500 text-xs text-center sm:text-left mt-1 sm:ml-5  '
-              />
-            </div>
+              <div className='relative text-center sm:text-left'>
+                <Field
+                  id='field1'
+                  autoComplete='off'
+                  name='title'
+                  placeholder='Title'
+                  type='text'
+                  className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
+                />
+                <ErrorMessage
+                  component='div'
+                  name='title'
+                  className='text-red-500 text-xs text-center sm:text-left mt-1 sm:ml-5  '
+                />
+              </div>
 
-            <div className='relative text-center sm:text-left'>
-              <Field
-                id='field2'
-                autoComplete='off'
-                as='textarea'
-                rows='7'
-                name='description'
-                placeholder='Describe your experience'
-                className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
-              />
-              <ErrorMessage
-                component='div'
-                name='description'
-                className='text-red-500 text-xs text-center sm:text-left mt-2 sm:ml-5  '
-              />
-            </div>
-            <button className='mt-6 mb-5 bg-purple-800 text-white rounded-md sm:py-2 sm:w-96 py-1.5 w-52  hover:shadow-xl font-bold shadow-md transition-all ease-in-out duration-300 hover:bg-opacity-80 sm:text-lg text-sm'>
-              Share
-            </button>
-          </Form>
-        </div>
+              <div className='relative text-center sm:text-left'>
+                <Field
+                  id='field2'
+                  autoComplete='off'
+                  as='textarea'
+                  rows='7'
+                  name='description'
+                  placeholder='Describe your experience'
+                  className='mt-6 sm:py-2 sm:w-96 py-1.5 w-52 rounded-lg shadow-md placeholder-gray-400 px-6 outline-none  tracking-widest sm:text-lg text-sm '
+                />
+                <ErrorMessage
+                  component='div'
+                  name='description'
+                  className='text-red-500 text-xs text-center sm:text-left mt-2 sm:ml-5  '
+                />
+              </div>
+              <button className='mt-6 mb-5 bg-purple-800 text-white rounded-md sm:py-2 sm:w-96 py-1.5 w-52  hover:shadow-xl font-bold shadow-md transition-all ease-in-out duration-300 hover:bg-opacity-80 sm:text-lg text-sm'>
+                Share
+              </button>
+            </Form>
+          </div>
+        </Fade>
       </Formik>
       <Toaster position='top-right' />
     </div>

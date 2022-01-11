@@ -3,6 +3,7 @@ import { ImCancelCircle } from "react-icons/im";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { auth, db } from "../firebaseConfig";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { Loading } from "notiflix/build/notiflix-loading-aio";
 import {
   editFormTourGuideValidations,
   editFormNormalUserValidations,
@@ -105,10 +106,11 @@ const EditSettingsDialog = (props) => {
     <div className='flex justify-center items-center h-screen fixed top-0 left-0 w-full bg-gray-300'>
       {isLoading ? (
         <div className='w-full h-screen flex justify-center items-center'>
-          <h1 className='text-2xl'>Loading...</h1>
+          {Loading.circle()}
         </div>
       ) : (
         <div className='shadow-2xl relative m-2 p-4 w-full max-w-2xl bg-white rounded-lg flex flex-col'>
+          {Loading.remove()}
           <div className='flex justify-between m-2 items-center '>
             <h1 className='text-xl '>Edit Information</h1>
             <ImCancelCircle
