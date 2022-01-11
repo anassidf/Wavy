@@ -16,7 +16,7 @@ import TourGuides from './components/TourGuides';
 import Recommendations from './components/Recommendations';
 import Admin from './components/admin/Admin';
 import AdminDashboard from './components/admin/AdminDashboard';
-import Test1 from './components/Test1';
+import NotFound from './components/NotFound';
 function App() {
 	useEffect(() => {
 		console.log(window.location.href);
@@ -49,7 +49,7 @@ function App() {
 					<Route exact path='/recommendations' component={Recommendations} />
 					<Route exact path='/admin' component={Admin} />
 					<Route path='/admin/dashboard' component={AdminDashboard} />
-					<Route path='/test' component={Test1} />
+					<Route path='*' component={NotFound} />
 				</Switch>
 				<Footer />
 			</div>

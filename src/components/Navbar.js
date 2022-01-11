@@ -6,6 +6,7 @@ import menuIcon from '../assets/menuIcon.svg';
 import exitNavbarIcon from '../assets/exitNavbarIcon.svg';
 import { auth } from '../firebaseConfig';
 import { useHistory } from 'react-router-dom';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 
 import { Menu, Transition } from '@headlessui/react';
 import { useSelector } from 'react-redux';
@@ -70,9 +71,21 @@ const Navbar = () => {
 			window.location.href ==
 				'http://localhost:3000/admin/dashboard/reports/trash'
 		) {
-			document.getElementById('navbar').style.backgroundColor = '#D1D5DB';
+			document.getElementById('navbar').style.backgroundColor = '#34D399';
 		} else return;
 	}, [window.location.href]);
+
+	const contactUs = () => {
+		Report.info(
+			`Contact Wavy Info`,
+
+			'0799132736 - ' + 'Tourism@wavy.com',
+			'Done',
+			{
+				className: 'text-center breack-words',
+			}
+		);
+	};
 
 	const dropMenu = () => {
 		document.getElementById('mobileNav').style.top = '0';
@@ -91,7 +104,7 @@ const Navbar = () => {
 			<div
 				id='navbar'
 				className={`${
-					scrolling ? 'bg-gray-300 shadow-md' : ''
+					scrolling ? 'bg-green-400 shadow-md' : ''
 				} text-black bg-transparent relative h-14  flex items-center text-lg transition-all duration-300 ease-in-out`}>
 				<div className='flex  items-center  ml-6 lg:ml-16'>
 					<Link to='/'>
@@ -144,7 +157,7 @@ const Navbar = () => {
 									className='absolute left-0 text-gray-800 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-sm'>
 									<Link
 										to={
-											authenticated
+											authenticated && showState
 												? `/profile-page/${auth?.currentUser?.uid}`
 												: ''
 										}>
@@ -221,6 +234,24 @@ const Navbar = () => {
 											</svg>
 										</Menu.Item>
 									</Link>
+
+									<Menu.Item
+										onClick={contactUs}
+										className='cursor-pointer hover:bg-gray-300  text-gray-800 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+										as='div'>
+										<h1>Contact Us</h1>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-5 w-5'
+											viewBox='0 0 20 20'
+											fill='currentColor'>
+											<path
+												fillRule='evenodd'
+												d='M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z'
+												clipRule='evenodd'
+											/>
+										</svg>
+									</Menu.Item>
 								</Menu.Items>
 							</Transition>
 						</Menu>
@@ -406,6 +437,23 @@ const Navbar = () => {
 											</svg>
 										</Menu.Item>
 									</Link>
+									<Menu.Item
+										onClick={contactUs}
+										className='cursor-pointer hover:bg-gray-300  text-gray-800 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+										as='div'>
+										<h1>Contact Us</h1>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											className='h-5 w-5'
+											viewBox='0 0 20 20'
+											fill='currentColor'>
+											<path
+												fillRule='evenodd'
+												d='M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z'
+												clipRule='evenodd'
+											/>
+										</svg>
+									</Menu.Item>
 								</Menu.Items>
 							</Transition>
 						</Menu>
