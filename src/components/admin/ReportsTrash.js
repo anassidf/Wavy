@@ -12,6 +12,7 @@ import {
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { toast, Toaster } from 'react-hot-toast';
 import noData from '../../assets/noData.svg';
+import Bounce from 'react-reveal/Bounce';
 
 const ReportsTrash = () => {
 	const [data, setData] = useState([]);
@@ -76,39 +77,41 @@ const ReportsTrash = () => {
 		<div className=' bg-gray-200 flex justify-center items-center flex-wrap '>
 			{data.length ? (
 				data?.map((post, index) => (
-					<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-pink-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
-						<div className='mt-16 xl:ml-5 xl:w-text_width   flex justify-center flex-col break-words xl:break-words text-white '>
-							<div className='h-52 xl:h-32 '>
-								<p className='text-xs  xl:text-lg mb-2 '>
-									Reporter ID: {post.reporterId}
-								</p>
-								<p className='text-xs xl:text-lg mb-5 '>
-									Report On ID: {post.reportOnId}
-								</p>
+					<Bounce bottom>
+						<div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
+							<div className='mt-16 xl:ml-5 xl:w-text_width   flex justify-center flex-col break-words xl:break-words text-white '>
+								<div className='h-52 xl:h-32 '>
+									<p className='text-xs  xl:text-lg mb-2 '>
+										Reporter ID: {post.reporterId}
+									</p>
+									<p className='text-xs xl:text-lg mb-5 '>
+										Report On ID: {post.reportOnId}
+									</p>
 
-								<p className='xl:mr-5 xl:ml-0  ml-5 mr-5  text-xs xl:text-base '>
-									{post.report}
-								</p>
-							</div>
+									<p className='xl:mr-5 xl:ml-0  ml-5 mr-5  text-xs xl:text-base '>
+										{post.report}
+									</p>
+								</div>
 
-							<div className='xl:flex xl:flex-row mt-7 items-center  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
-								<button
-									onClick={() => {
-										retrieveReport(index);
-									}}
-									className=' text-xs bg-green-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
-									Retrieve
-								</button>
-								<button
-									onClick={() => {
-										deleteReport(index);
-									}}
-									className=' text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
-									Delete
-								</button>
+								<div className='xl:flex xl:flex-row mt-7 items-center  flex flex-col xl:ml-0 xl:mr-0 ml-1 mr-1 '>
+									<button
+										onClick={() => {
+											retrieveReport(index);
+										}}
+										className=' text-xs bg-green-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+										Retrieve
+									</button>
+									<button
+										onClick={() => {
+											deleteReport(index);
+										}}
+										className=' text-xs bg-red-600  rounded-sm px-7 py-0.5 h-5 xl:mr-5 mb-5 transform hover:scale-110 transition-all duration-300 ease-in-out'>
+										Delete
+									</button>
+								</div>
 							</div>
 						</div>
-					</div>
+					</Bounce>
 				))
 			) : (
 				<div className='flex flex-col justify-center items-center mt-32'>
