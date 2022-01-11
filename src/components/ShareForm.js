@@ -1,16 +1,26 @@
 import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { db, auth, storage } from "../firebaseConfig";
-import { addDoc, collection, documentId } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  documentId,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useHistory } from "react-router-dom";
 import { useEffect } from "react";
 import gellary from "../assets/gallery.png";
 import { Toaster, toast } from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import { shareFormValidation } from "./validations/shareFormValidation";
 const ShareForm = () => {
-  /* using drop zone  */
+  const history = useHistory();
   const [file, setfile] = useState([]);
+  const currentUserID = auth.currentUser ? auth.currentUser.uid : "guest";
+  /* using drop zone  */
   const onDrop = useCallback((acceptedfile) => {
     // Do something with the file
     console.log(acceptedfile);
@@ -32,7 +42,7 @@ const ShareForm = () => {
   /* handle share form */
 
   const handleShareForm = (values) => {
-    console.log(values);
+    //console.log(values);
     /* get url for our image to make it public using firebase/storage */
     if (file.length) {
       //setIsLoading(true);
@@ -55,12 +65,15 @@ const ShareForm = () => {
                 imageUrl: url,
                 createdAt: todaysDate,
                 likes: 0,
-                uid: auth.currentUser ? auth.currentUser.uid : "guest",
+                uid: currentUserID,
                 status: "under review",
                 trashed: false,
               })
                 .then(() => {
                   toast.success("Post is under review now ");
+                  setTimeout(() => {
+                    history.push("/");
+                  }, 2000);
                 })
                 .catch((error) => {
                   console.log(error.message);

@@ -22,7 +22,8 @@ const ReviewForm = (props) => {
     date?.getFullYear() + "-" + (date?.getMonth() + 1) + "-" + date?.getDate();
   const handleSubmit = async (values) => {
     const reviewsCollectionRef = collection(db, "reviews");
-    let reviews = [];
+    let reviewDocs = [];
+    let reviewsID = [];
     await addDoc(reviewsCollectionRef, {
       description: values?.description,
       fromID: currentUserID,
@@ -30,12 +31,14 @@ const ReviewForm = (props) => {
       createdAt: todaysDate,
     });
     await getDocs(reviewsCollectionRef)?.then((resp) => {
-      reviews = resp?.docs?.map((doc) => {
-        if (doc?.data()?.toID === uid) return doc?.id;
+      reviewDocs = resp.docs.filter((doc) => doc.data().toID === uid);
+      reviewsID = reviewDocs.map((doc) => {
+        return doc.id;
       });
+      console.log(reviewDocs);
     });
     await updateDoc(doc(db, "Users", uid), {
-      reviewsID: reviews,
+      reviewsID: reviewsID,
     });
     //setReviews(reviews);
     setIsReviewFormOpen(false);

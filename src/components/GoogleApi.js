@@ -12,6 +12,7 @@ import {
 import { Toaster, toast } from "react-hot-toast";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
+import GuestUser from "../assets/GuestUser.svg";
 const GoogleApi = ({ action }) => {
   const history = useHistory();
   const googleRegistration = async (e) => {
