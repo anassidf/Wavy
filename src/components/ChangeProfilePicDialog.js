@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { ImCancelCircle } from "react-icons/im";
-import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
 import { storage, auth, db } from "../firebaseConfig";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { toast, Toaster } from "react-hot-toast";
@@ -47,8 +47,6 @@ const ChangeProfilePicDialog = (props) => {
     }
   };
   const onDrop = useCallback((acceptedFile) => {
-    // Do something with the files
-    console.log(acceptedFile);
     setFile(
       acceptedFile.map((file) =>
         Object.assign(file, {
@@ -105,9 +103,8 @@ const ChangeProfilePicDialog = (props) => {
                   Drag and drop any Image here, or click to select Image
                 </p>
               )}
-              {/* <aside>{thumbs}</aside> */}
             </div>
-            {/* <img src={image} alt="Old Image!" className="w-36 h-44" /> */}
+
             {file.length > 0 && thumbs}
             <button
               type='submit'
@@ -119,7 +116,7 @@ const ChangeProfilePicDialog = (props) => {
           </div>
         )}
 
-        <Toaster position='bottom-center' />
+        <Toaster position='top-center' />
       </div>
     </>
   );

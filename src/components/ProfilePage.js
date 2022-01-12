@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import levi from "../assets/attack_on_titan_levi.jpg";
-import { useParams, useHistory } from "react-router-dom";
-import reviewsData from "./reviews";
+import { useParams } from "react-router-dom";
 import emptyData from "../assets/emptyData.svg";
 import PostCardInProfilePage from "./PostCardInProfilePage";
 import Review from "./Review";
@@ -16,17 +14,9 @@ import EditSettingsDialog from "./EditSettingsDialog";
 import BecomeATourGuideForm from "./BecomeATourGuideForm";
 import ChangeProfilePicDialog from "./ChangeProfilePicDialog";
 import { auth, db } from "../firebaseConfig";
-import {
-  collection,
-  getDocs,
-  getDoc,
-  addDoc,
-  updateDoc,
-  doc,
-  deleteDoc,
-  documentId,
-} from "firebase/firestore";
+import { getDoc, doc, where } from "firebase/firestore";
 import ReviewForm from "./reviewForm";
+import { useSelector } from "react-redux";
 const ProfilePageNew = () => {
   const [profilePicture, setProfilePicture] = useState("");
   const [fullName, setFullName] = useState("");
@@ -36,7 +26,8 @@ const ProfilePageNew = () => {
   const [posts, setPosts] = useState([]);
   const [likedPosts, setLikedPosts] = useState([]);
   const [reviews, setReviews] = useState([]);
-  const [isTourGuide, setIsTourGuide] = useState(true);
+  const [isTourGuide, setIsTourGuide] = useState(false);
+  const [tourGuideRequestStatus, setTourGuideRequestStatus] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
   const [cityToGuideIn, setCityToGuideIn] = useState("");
@@ -58,6 +49,9 @@ const ProfilePageNew = () => {
   const params = useParams();
   const uid = params?.uid;
   const [currentUserID, setCurrentUserID] = useState("");
+  const showState = useSelector((state) => {
+    return state.showUser.showUser;
+  });
 
   const fetchPosts = async () => {
     setIsPostsLoading(true);
@@ -87,8 +81,10 @@ const ProfilePageNew = () => {
         userData?.likedPostsID?.map(async (id) => {
           await getDoc(doc(db, "Posts", id))
             .then((resp) => {
-              const postData = resp?.data();
-              arrayOfLikedPosts?.push(postData);
+              if (!resp.data().trashed && resp?.data().status === "approaved") {
+                const postData = resp?.data();
+                arrayOfLikedPosts?.push(postData);
+              }
             })
             .catch((err) => console.log(err));
         });
@@ -132,6 +128,7 @@ const ProfilePageNew = () => {
         setProfilePicture(userData?.photo);
         setAddress(userData?.address);
         setIsTourGuide(userData?.isTourGuide);
+        setTourGuideRequestStatus(userData?.isTourGuideAccepted);
         setCityToGuideIn(userData?.cityToGuideIn);
         userData?.status === "Available"
           ? setisAvailable(true)
@@ -227,7 +224,6 @@ const ProfilePageNew = () => {
   };
 
   return (
-    /* TODO make it responsive */ /*  */
     <>
       {isProfilePageLoading ? (
         <div className='w-full h-screen flex justify-center items-center'>
@@ -243,7 +239,7 @@ const ProfilePageNew = () => {
           ) : (
             <section className='mt-20 flex flex-col items-center shadow-xl md:ml-8 md:w-1/3'>
               {Loading.remove()}
-              {currentUserID === uid && (
+              {currentUserID === uid && showState && (
                 <div
                   className='flex self-end justify-start items-center mr-4 mt-4 cursor-pointer'
                   onClick={() => setIsEditFormOpened(!isEditFormOpened)}
@@ -259,7 +255,7 @@ const ProfilePageNew = () => {
                   alt={fullName}
                   className='object-cover rounded-full w-28 h-28 sm:w-44 sm:h-44'
                 />
-                {currentUserID === uid && (
+                {currentUserID === uid && showState && (
                   <div className='w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover bg-gray-100 flex justify-center items-center absolute bottom-0 left-0 cursor-pointer'>
                     <FcEditImage
                       size={24}
@@ -325,15 +321,17 @@ const ProfilePageNew = () => {
                   </div>
                 </div>
               </div>
-              {currentUserID === uid && !isTourGuide && (
-                <button
-                  onClick={() => setIsBecomeATourGuideFormOpened(true)}
-                  className=' bg-pink-600 hover:bg-opacity-95 p-3 mb-2 md:mb-4 rounded-full shadow-md text-white transform hover:scale-110 hover:shadow-xl transition-all duration-300 ease-in-out'
-                >
-                  Become a Tour guide
-                </button>
-              )}
-              {currentUserID !== uid && isTourGuide && (
+              {currentUserID === uid &&
+                tourGuideRequestStatus !== "approaved" &&
+                showState && (
+                  <button
+                    onClick={() => setIsBecomeATourGuideFormOpened(true)}
+                    className=' bg-pink-600 hover:bg-opacity-95 p-3 mb-2 md:mb-4 rounded-full shadow-md text-white transform hover:scale-110 hover:shadow-xl transition-all duration-300 ease-in-out'
+                  >
+                    Become a Tour guide
+                  </button>
+                )}
+              {currentUserID !== uid && isTourGuide && showState && (
                 <button
                   onClick={() => {
                     setIsReviewFormOpen(true);
@@ -358,7 +356,7 @@ const ProfilePageNew = () => {
               >
                 Posts
               </p>
-              {currentUserID === uid && (
+              {currentUserID === uid && showState && (
                 <p
                   className={
                     selectedView === "liked posts"
@@ -516,7 +514,6 @@ const ProfilePageNew = () => {
           setIsBecomeATourGuideFormOpened={setIsBecomeATourGuideFormOpened}
           cityToGuideIn={cityToGuideIn}
           setCityToGuideIn={setCityToGuideIn}
-          setIsTourGuide={setIsTourGuide}
         />
       )}
       {isChangeProfilePicOpen && (

@@ -2,18 +2,9 @@ import React, { useState, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { db, auth, storage } from "../firebaseConfig";
 import Fade from "react-reveal/Fade";
-import {
-  addDoc,
-  collection,
-  doc,
-  documentId,
-  getDocs,
-  updateDoc,
-} from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useHistory } from "react-router-dom";
-import { useEffect } from "react";
-import gellary from "../assets/gallery.png";
 import { Toaster, toast } from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import { shareFormValidation } from "./validations/shareFormValidation";
@@ -24,7 +15,6 @@ const ShareForm = () => {
   /* using drop zone  */
   const onDrop = useCallback((acceptedfile) => {
     // Do something with the file
-    console.log(acceptedfile);
 
     setfile(
       acceptedfile.map((file) =>
@@ -43,10 +33,8 @@ const ShareForm = () => {
   /* handle share form */
 
   const handleShareForm = (values) => {
-    //console.log(values);
     /* get url for our image to make it public using firebase/storage */
     if (file.length) {
-      //setIsLoading(true);
       const storageRef = ref(storage, `images/${file[0].name}`);
       const uploadTask = uploadBytesResumable(storageRef, file[0]);
 
@@ -184,7 +172,7 @@ const ShareForm = () => {
           </div>
         </Fade>
       </Formik>
-      <Toaster position='top-right' />
+      <Toaster position='top-center' />
     </div>
   );
 };

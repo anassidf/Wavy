@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Formik, Form, ErrorMessage, Field } from "formik";
 import { Toaster, toast } from "react-hot-toast";
 import wavyTeam from "../assets/blackNavbarIcon.svg";
@@ -163,7 +163,7 @@ const UserAdditionDataForm = () => {
           </Form>
         </div>
       </Formik>
-      <Toaster position='top-right' />
+      <Toaster position='top-center' />
     </div>
   );
 };
