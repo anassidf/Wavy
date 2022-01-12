@@ -104,6 +104,7 @@ const TourGuides = () => {
             reporterId: auth.currentUser.uid,
             reportOnId,
             report: clientReport,
+            trashed: false,
           });
           toast.success("Report Sent Successfully");
         },
@@ -138,7 +139,7 @@ const TourGuides = () => {
           <input
             value={city}
             type='text'
-            className='sm:w-80 w-32 py-2 sm:px-2 px-1 rounded-full sm:ml-10 ml-5 outline-none sm:text-lg text-sm  '
+            className='w-32 sm:w-3/4 py-2 sm:px-2 px-1 rounded-full sm:ml-10 ml-5 outline-none sm:text-lg text-sm  '
             placeholder='Enter The City Name'
             onChange={(e) => {
               setCity(e.target.value);

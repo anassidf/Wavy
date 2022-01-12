@@ -12,8 +12,8 @@ const RecommendedPlaces = () => {
               Wavy Team Recommendations
             </h1>
             <p className='text-base text-center sm:text-left sm:text-xl mt-9 mr-5'>
-              Wavy Team Recommendations based on the places that tourists often
-              visit in Jordan
+              Wavy Team Recommendations Based On The Places That Tourists Often
+              Visit In Jordan
             </p>
             {/* share form  */}
             <Link to='/recommendations'>

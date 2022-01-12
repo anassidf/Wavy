@@ -163,7 +163,7 @@ const UserAdditionDataForm = () => {
           </Form>
         </div>
       </Formik>
-      <Toaster position='top-center' />
+      <Toaster position='top-left' />
     </div>
   );
 };
