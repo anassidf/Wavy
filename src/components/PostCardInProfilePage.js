@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 const PostCardInProfilePage = ({ post }) => {
   const {
@@ -11,9 +10,6 @@ const PostCardInProfilePage = ({ post }) => {
   const handleFindTourGuides = () => {
     history.push(`/tour_guides/${placeName}`);
   };
-  useEffect(() => {
-    //console.log(post);
-  });
   return (
     <article className='bg-white rounded shadow-xl h-full mx-4 mt-2 flex flex-col items-center xl:items-start'>
       <div className='flex flex-col items-center xl:flex-row xl:items-start mt-5'>

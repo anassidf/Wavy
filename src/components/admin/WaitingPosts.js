@@ -48,7 +48,6 @@ const WaitingPosts = () => {
 
     setData(temp);
     setIds(ids);
-    console.log(temp);
   }, []);
 
   const approavePost = (index) => {

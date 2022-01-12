@@ -1,18 +1,10 @@
 import google from "../assets/google.svg";
 import { auth, db } from "../firebaseConfig";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  DocumentSnapshot,
-} from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { Toaster, toast } from "react-hot-toast";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { showUser, hideUser } from "../redux/reducers/userSlice";
 const GoogleApiSignUp = () => {
   const dispatch = useDispatch();
@@ -25,10 +17,8 @@ const GoogleApiSignUp = () => {
     await signInWithPopup(auth, provider)
       .then(async (user) => {
         /* check if the account already registered */
-        console.log(user.user.uid);
 
         const userChecker = await getDoc(doc(db, "Users", user.user.uid));
-        console.log(userChecker.data());
 
         if (userChecker.data() === undefined) {
           await setDoc(doc(db, "Users", auth.currentUser.uid), {

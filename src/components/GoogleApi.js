@@ -1,33 +1,17 @@
 import google from "../assets/google.svg";
 import { auth, db } from "../firebaseConfig";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  DocumentSnapshot,
-} from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { Toaster, toast } from "react-hot-toast";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
-import GuestUser from "../assets/GuestUser.svg";
 const GoogleApi = ({ action }) => {
   const history = useHistory();
   const googleRegistration = async (e) => {
     e.preventDefault();
     /*  add the provider (google) */
     const provider = new GoogleAuthProvider();
-
     await signInWithPopup(auth, provider)
       .then(async (user) => {
-        /* toast.success(
-					action === 'login'
-						? 'You are loged in'
-						: 'Congratulation you are regestered'
-				); */
-
         await setDoc(doc(db, "Users", auth.currentUser.uid), {
           name: auth.currentUser.displayName,
           email: auth.currentUser.email,
@@ -75,7 +59,7 @@ const GoogleApi = ({ action }) => {
           {action === "login" ? "Login with Google" : "Sign Up with Google"}
         </h1>
       </button>
-      <Toaster position='top-right' />
+      <Toaster position='top-center' />
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ReactFullpage from "@fullpage/react-fullpage";
-import petra from "../assets/signUp.jpg";
 import ReactPlayer from "react-player";
 import { db } from "../firebaseConfig";
 import { getDocs, query, collection } from "firebase/firestore";
@@ -23,7 +21,6 @@ function Recommendations() {
       dataTemp.push(item.data());
     });
     setRecommendations(dataTemp);
-    console.log(dataTemp);
   }, []);
   return (
     <AwesomeSlider

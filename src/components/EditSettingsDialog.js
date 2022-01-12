@@ -8,7 +8,6 @@ import {
   editFormTourGuideValidations,
   editFormNormalUserValidations,
 } from "./validations/editSettingsFormValidations";
-import { BiUser } from "react-icons/bi";
 import { useEffect } from "react";
 const EditSettingsDialog = (props) => {
   const {

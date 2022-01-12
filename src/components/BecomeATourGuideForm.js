@@ -2,16 +2,13 @@ import { useState, useEffect } from "react";
 import { ImCancelCircle } from "react-icons/im";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { updateDoc, doc, getDoc } from "firebase/firestore";
-import { storage, auth, db } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
+import { toast, Toaster } from "react-hot-toast";
 import { becomeATourGuideValidation } from "./validations/becomeATourGuideValidation";
 
 const BecomeATourGuideForm = (props) => {
-  const {
-    setIsBecomeATourGuideFormOpened,
-    cityToGuideIn,
-    setCityToGuideIn,
-    setIsTourGuide,
-  } = props;
+  const { setIsBecomeATourGuideFormOpened, cityToGuideIn, setCityToGuideIn } =
+    props;
   const [userDoc, setUserDoc] = useState({});
   const initialValues = { city: cityToGuideIn };
   const handleSubmit = async (values) => {
@@ -21,12 +18,13 @@ const BecomeATourGuideForm = (props) => {
       trashed: false,
     });
     setCityToGuideIn(values.city);
-    setIsTourGuide(true);
-    setIsBecomeATourGuideFormOpened(false);
+    toast.success("Your Request is Under Review Now.");
+    setTimeout(() => {
+      setIsBecomeATourGuideFormOpened(false);
+    }, 2000);
   };
   useEffect(() => {
     setUserDoc(doc(db, "Users", auth.currentUser.uid));
-    //fetchUserInfo();
   }, []);
   return (
     <>
@@ -86,6 +84,7 @@ const BecomeATourGuideForm = (props) => {
             </Form>
           </Formik>
         </div>
+        <Toaster position='top-center' />
       </div>
     </>
   );

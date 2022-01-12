@@ -1,16 +1,13 @@
-import { useState, useEffect } from "react";
 import { ImCancelCircle } from "react-icons/im";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
   updateDoc,
   doc,
-  getDoc,
   addDoc,
   collection,
-  documentId,
   getDocs,
 } from "firebase/firestore";
-import { storage, auth, db } from "../firebaseConfig";
+import { db } from "../firebaseConfig";
 import { reviewFormValidation } from "./validations/reviewFormValidation";
 const ReviewForm = (props) => {
   const { setIsReviewFormOpen, currentUserID, uid, setReviews } = props;
@@ -39,7 +36,6 @@ const ReviewForm = (props) => {
     await updateDoc(doc(db, "Users", uid), {
       reviewsID: reviewsID,
     });
-    //setReviews(reviews);
     setIsReviewFormOpen(false);
   };
 
