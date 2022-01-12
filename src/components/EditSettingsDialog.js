@@ -72,7 +72,7 @@ const EditSettingsDialog = (props) => {
           address: address,
           description: description,
           dateOfBirth: dateOfBirth,
-          fullName: fullName,
+          name: fullName,
           phoneNumber: phoneNumber,
           status: status,
           cityToGuideIn: cityToGuideIn,
@@ -82,7 +82,7 @@ const EditSettingsDialog = (props) => {
           address: address,
           description: description,
           dateOfBirth: dateOfBirth,
-          fullName: fullName,
+          name: fullName,
           phoneNumber: phoneNumber,
         });
     setFullName(fullName);

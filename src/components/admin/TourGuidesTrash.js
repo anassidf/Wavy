@@ -81,7 +81,7 @@ const TourGuidesTrash = () => {
       {data.length ? (
         data?.map((post, index) => (
           <Bounce bottom>
-            <div className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
+            <div className='mb-5 xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'>
               {/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
               <img
                 className='h-52 xl:h-72 w-72 xl:rounded-tl-md xl:rounded-bl-md rounded-tr-md rounded-tl-md xl:rounded-tr-none '

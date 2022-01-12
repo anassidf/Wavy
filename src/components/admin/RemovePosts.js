@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { db } from "../../firebaseConfig";
+import { db, auth } from "../../firebaseConfig";
 import {
   doc,
   collection,
   getDocs,
   where,
   query,
+  deleteDoc,
   updateDoc,
 } from "firebase/firestore";
 import { Confirm } from "notiflix/build/notiflix-confirm-aio";
@@ -16,6 +17,7 @@ import Bounce from "react-reveal/Bounce";
 const RemovePosts = () => {
   const [data, setData] = useState([]);
   const [ids, setIds] = useState([]);
+  const currentUserID = auth.currentUser ? auth.currentUser.uid : "guest";
   useEffect(async () => {
     /*  getting posts data */
     const docsRef = query(
@@ -33,12 +35,12 @@ const RemovePosts = () => {
 
     setData(temp);
     setIds(ids);
+    console.log(temp);
   }, []);
 
   /* move post to trash methode */
   const deletePost = async (index, post) => {
     const postsCollectionRef = collection(db, "Posts");
-    const usersCollectionRef = collection(db, "Users");
     let postsID = [];
     let postDocs = [];
 
@@ -52,7 +54,6 @@ const RemovePosts = () => {
       async () => {
         await updateDoc(doc(db, "Posts", postID), {
           trashed: true,
-          status: "under review",
         });
         if (post.uid !== "guest") {
           await getDocs(postsCollectionRef)?.then((resp) => {
@@ -80,7 +81,7 @@ const RemovePosts = () => {
           <Bounce bottom>
             <div
               key={index}
-              className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'
+              className='mb-5 xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'
             >
               {/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
               <img

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { db } from "../../firebaseConfig";
+import { db, auth } from "../../firebaseConfig";
 import {
   doc,
   collection,
@@ -20,7 +20,7 @@ const PostsTrash = () => {
     /*  getting posts data */
     const docsRef = query(
       collection(db, "Posts"),
-      where("status", "==", "under review"),
+
       where("trashed", "==", true)
     );
     const posts = await getDocs(docsRef);
@@ -38,6 +38,8 @@ const PostsTrash = () => {
 
   /* move post to trash methode */
   const deletePost = async (index) => {
+    console.log(index);
+
     let postID = ids[index];
 
     /* delete post proccess */
@@ -80,7 +82,7 @@ const PostsTrash = () => {
           <Bounce bottom>
             <div
               key={index}
-              className='xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'
+              className='mb-5 xl:w-super_larg text-center xl:text-left xl:min-h-72  w-40 bg-blue-500  mt-24 mr-5 ml-5 rounded-md  flex flex-col xl:flex xl:flex-row  relative shadow-xl break-words'
             >
               {/* <div className='xl:w-80 w-full flex justify-center xl:block'> */}
               <img

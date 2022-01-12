@@ -15,7 +15,6 @@ const Navbar = () => {
   const [scrolling, setScrolling] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
-  const [userImage, setUserImage] = useState("");
   const showState = useSelector((state) => {
     return state.showUser.showUser;
   });
@@ -33,12 +32,8 @@ const Navbar = () => {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setAuthenticated(true);
-
-        setUserImage(user.photoURL);
       } else {
         setAuthenticated(false);
-
-        setUserImage("");
       }
     });
     return () => {};
@@ -161,35 +156,32 @@ const Navbar = () => {
                   as='data'
                   className='absolute left-0 text-gray-800 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-sm'
                 >
-                  {authenticated && showState && (
-                    <Link
-                      to={
-                        authenticated && showState
-                          ? `/profile-page/${auth?.currentUser?.uid}`
-                          : ""
-                      }
+                  <Link
+                    to={
+                      authenticated && showState
+                        ? `/profile-page/${auth?.currentUser?.uid}`
+                        : ""
+                    }
+                  >
+                    <Menu.Item
+                      as='div'
+                      className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
                     >
-                      <Menu.Item
-                        as='div'
-                        className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+                      <h1> Profile</h1>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        className='h-5 w-5'
+                        viewBox='0 0 20 20'
+                        fill='currentColor'
                       >
-                        <h1> Profile</h1>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          className='h-5 w-5'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'
-                        >
-                          <path
-                            fillRule='evenodd'
-                            d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
-                            clipRule='evenodd'
-                          />
-                        </svg>
-                      </Menu.Item>
-                    </Link>
-                  )}
-
+                        <path
+                          fillRule='evenodd'
+                          d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
+                          clipRule='evenodd'
+                        />
+                      </svg>
+                    </Menu.Item>
+                  </Link>
                   <Link to='/share'>
                     <Menu.Item
                       className=' hover:bg-gray-300 text-gray-800  hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out '
@@ -284,12 +276,6 @@ const Navbar = () => {
 
             {authenticated && showState ? (
               <>
-                <Link
-                  to={"/profile-page/" + auth.currentUser.uid}
-                  className='lg:flex items-center justify-center space-x-1 hidden'
-                >
-                  <Avatar src={userImage} />
-                </Link>
                 <button
                   onClick={logOut}
                   className='py-1 px-6 rounded-full bg-pink-600 shadow-lg hover:bg-opacity-70 transition-all duration-300 text-white hidden lg:inline-flex'
@@ -508,14 +494,6 @@ const Navbar = () => {
             </Link>
             {authenticated && showState ? (
               <>
-                {" "}
-                <Link
-                  onClick={exitMenu}
-                  to='/'
-                  className='flex items-center justify-center space-x-1'
-                >
-                  <Avatar src={userImage} />
-                </Link>
                 <button
                   onClick={logOut}
                   className='py-.5 px-6 rounded-full bg-pink-600 shadow-lg hover:bg-opacity-70 transition-all duration-300 text-white text-lg font-bold '
