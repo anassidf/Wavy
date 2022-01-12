@@ -15,7 +15,6 @@ const Navbar = () => {
 	const [scrolling, setScrolling] = useState(false);
 	const [authenticated, setAuthenticated] = useState(false);
 
-	const [userImage, setUserImage] = useState('');
 	const showState = useSelector((state) => {
 		return state.showUser.showUser;
 	});
@@ -33,12 +32,8 @@ const Navbar = () => {
 		auth.onAuthStateChanged((user) => {
 			if (user) {
 				setAuthenticated(true);
-
-				setUserImage(user.photoURL);
 			} else {
 				setAuthenticated(false);
-
-				setUserImage('');
 			}
 		});
 		return () => {};
@@ -263,11 +258,6 @@ const Navbar = () => {
 
 						{authenticated && showState ? (
 							<>
-								<Link
-									to={'/profile-page/' + auth.currentUser.uid}
-									className='lg:flex items-center justify-center space-x-1 hidden'>
-									<Avatar src={userImage} />
-								</Link>
 								<button
 									onClick={logOut}
 									className='py-1 px-6 rounded-full bg-pink-600 shadow-lg hover:bg-opacity-70 transition-all duration-300 text-white hidden lg:inline-flex'>
@@ -466,13 +456,6 @@ const Navbar = () => {
 						</Link>
 						{authenticated && showState ? (
 							<>
-								{' '}
-								<Link
-									onClick={exitMenu}
-									to='/'
-									className='flex items-center justify-center space-x-1'>
-									<Avatar src={userImage} />
-								</Link>
 								<button
 									onClick={logOut}
 									className='py-.5 px-6 rounded-full bg-pink-600 shadow-lg hover:bg-opacity-70 transition-all duration-300 text-white text-lg font-bold '>

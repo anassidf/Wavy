@@ -172,7 +172,7 @@ const TourGuides = () => {
 						console.log(tourGuide),
 						(
 							<Bounce bottom>
-								<div className='lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-60 bg-blue-500 mt-10 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
+								<div className='mb-10 lg:w-super_larg text-center lg:text-left lg:min-h-72 h-super_larg_height w-60 bg-blue-500 mt-10 mr-5 ml-5 rounded-md  flex flex-col lg:flex lg:flex-row  relative shadow-xl'>
 									<Link
 										to={
 											auth.currentUser && showState
