@@ -156,32 +156,34 @@ const Navbar = () => {
                   as='data'
                   className='absolute left-0 text-gray-800 w-56 mt-2 origin-top-right bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-sm'
                 >
-                  <Link
-                    to={
-                      authenticated && showState
-                        ? `/profile-page/${auth?.currentUser?.uid}`
-                        : ""
-                    }
-                  >
-                    <Menu.Item
-                      as='div'
-                      className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+                  {authenticated && showState && (
+                    <Link
+                      to={
+                        authenticated && showState
+                          ? `/profile-page/${auth?.currentUser?.uid}`
+                          : ""
+                      }
                     >
-                      <h1> Profile</h1>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='h-5 w-5'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
+                      <Menu.Item
+                        as='div'
+                        className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
                       >
-                        <path
-                          fillRule='evenodd'
-                          d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                    </Menu.Item>
-                  </Link>
+                        <h1> Profile</h1>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='h-5 w-5'
+                          viewBox='0 0 20 20'
+                          fill='currentColor'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
+                            clipRule='evenodd'
+                          />
+                        </svg>
+                      </Menu.Item>
+                    </Link>
+                  )}
                   <Link to='/share'>
                     <Menu.Item
                       className=' hover:bg-gray-300 text-gray-800  hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out '
@@ -371,33 +373,36 @@ const Navbar = () => {
                   as='data'
                   className='absolute  text-gray-800 w-52 mt-2 -left-10 bg-white border border-gray-200 divide-y divide-gray-100 rounded-md shadow-lg outline-none text-xs'
                 >
-                  <Link
-                    to={
-                      authenticated
-                        ? `/profile-page/${auth?.currentUser?.uid}`
-                        : ""
-                    }
-                  >
-                    <Menu.Item
-                      onClick={exitMenu}
-                      as='div'
-                      className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
+                  {authenticated && showState && (
+                    <Link
+                      to={
+                        authenticated && showState
+                          ? `/profile-page/${auth?.currentUser?.uid}`
+                          : ""
+                      }
                     >
-                      <h1> Profile</h1>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        className='h-5 w-5'
-                        viewBox='0 0 20 20'
-                        fill='currentColor'
+                      <Menu.Item
+                        onClick={exitMenu}
+                        as='div'
+                        className=' hover:bg-gray-300 hover:bg-opacity-70 flex items-center justify-between py-2 px-4 rounded-md transition-all duration-300 ease-in-out'
                       >
-                        <path
-                          fillRule='evenodd'
-                          d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
-                          clipRule='evenodd'
-                        />
-                      </svg>
-                    </Menu.Item>
-                  </Link>
+                        <h1> Profile</h1>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='h-5 w-5'
+                          viewBox='0 0 20 20'
+                          fill='currentColor'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z'
+                            clipRule='evenodd'
+                          />
+                        </svg>
+                      </Menu.Item>
+                    </Link>
+                  )}
+
                   <Link to='/share'>
                     <Menu.Item
                       onClick={exitMenu}

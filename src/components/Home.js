@@ -13,10 +13,10 @@ const Home = () => {
         <div className='m-16 space-y-9 flex flex-col items-center sm:block '>
           <Fade>
             <h1 className='font-bold text-center text-xl sm:text-4xl sm:text-left sm:w-super_larg'>
-              If you dont know where to go in Jordan Wavy got you
+              If You Dont Know Where To Go In Jordan, Wavy Got You.
             </h1>
             <p className='text-lg text-center sm:text-left sm:text-xl'>
-              offers the best jordanian tour guides
+              Offers The Best Jordanian Tour Guides
             </p>
           </Fade>
           <Bounce bottom>

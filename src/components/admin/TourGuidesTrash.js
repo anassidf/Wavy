@@ -47,8 +47,11 @@ const TourGuidesTrash = () => {
       "Yes",
       "No",
       async () => {
-        await deleteDoc(doc(db, "Users", postID));
-        toast.success("Tour Guide Removed successfully");
+        await updateDoc(doc(db, "Users", postID), {
+          isTourGuideAccepted: "",
+          isTourGuide: false,
+        });
+        toast.success("Tour Guide Removed Successfully");
       },
       () => {},
       {}
@@ -69,7 +72,7 @@ const TourGuidesTrash = () => {
 
           isTourGuideAccepted: "waiting",
         });
-        toast.success("Moved to Trash successfully");
+        toast.success("Tour Guide Retreived Successfully");
       },
       () => {},
       {}
