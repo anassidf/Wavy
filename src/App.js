@@ -20,7 +20,7 @@ import NotFound from './components/NotFound';
 function App() {
 	useEffect(() => {
 		console.log(window.location.href);
-		if (window.location.href === 'http://localhost:3000/') {
+		if (window.location.href === 'https://wavy-cd33d.web.app/') {
 			Report.info(
 				'Why Wavy',
 				'The idea comes when we thougt that adventurers have kind of unstable life so we came up with wavy name',
